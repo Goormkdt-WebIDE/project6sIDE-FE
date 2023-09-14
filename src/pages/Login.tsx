@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import EmailInput from "../components/EmailInput";
+import PasswordInput from "../components/PasswordInput";
 
 interface FormValue {
   name: string;
@@ -28,6 +30,15 @@ function Register() {
     try {
       setLoading(true);
       // 데이터를 서버로 보내는 로직 추가
+      let createUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password);
+      console.log(createUser);
+
+      await firebase.database().ref("users").child(createUser.user.uid).set({
+        name: createUser.user.displayName,
+        image: createUser.user.photoURL,
+      });
     } catch (error) {
       setErrorFromSubmit(error.message);
       setLoading(false);
@@ -55,47 +66,19 @@ function Register() {
             onSubmit={handleSubmit(onSubmit)}
           >
 
-            <input
-              type="email"
-              placeholder="Email"
-              {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
-              className="border-none rounded-md p-2 w-full mt-4"
-            />
-            {errors.email && (
-              <p className="text-red-500">
-                <span className="inline-block align-middle">⚠ </span>
-                This email field is required
-              </p>
-            )}
-
-            <input
-              type="password"
-              placeholder="Password"
-              {...register("password", { required: true, minLength: 6 })}
-              className="border-none rounded-md p-2 w-full mt-4"
-            />
-            {errors.password && errors.password.type === "required" && (
-              <p className="text-red-500">
-                <span className="inline-block align-middle">⚠ </span>
-                This password field is required
-              </p>
-            )}
-            {errors.password && errors.password.type === "minLength" && (
-              <p className="text-red-500">
-                Password must have at least 6 characters
-              </p>
-            )}
+            <EmailInput register={register} errors={errors} />
+            <PasswordInput register={register} errors={errors} />
 
             <input
               type="submit"
               disabled={loading}
               value="Sign in"
-              className="bg-indigo-400 text-white text-uppercase border-none rounded-md p-2 w-full my-4 text-xl font-thin letter-spacing-2 hover:bg-indigo-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80"
+              className="bg-blue-400 text-white text-uppercase border-none rounded-md p-2 w-full my-4 text-xl font-thin letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80"
             />
             <Link to="/register" className="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2">
               REGISTER
             </Link>
-            <Link to="/register" className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4">
+            <Link to="/" className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4">
               PASSWORD RESET
             </Link>
           </form>
