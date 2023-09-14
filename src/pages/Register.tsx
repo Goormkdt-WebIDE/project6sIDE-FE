@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import NameInput from "../components/NameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
+
 
 interface FormValue {
   name: string;
@@ -36,6 +38,7 @@ function Register() {
         name: createUser.user.displayName,
         image: createUser.user.photoURL,
       });
+
     } catch (error) {
       setErrorFromSubmit(error.message);
       setLoading(false);
@@ -59,6 +62,7 @@ function Register() {
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
+
             <NameInput register={register} errors={errors} />
             <EmailInput register={register} errors={errors} />
             <PasswordInput register={register} errors={errors} />
