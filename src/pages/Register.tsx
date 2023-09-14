@@ -1,6 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import NameInput from "../components/NameInput";
+import EmailInput from "../components/EmailInput";
+import PasswordInput from "../components/PasswordInput";
 
 interface FormValue {
   name: string;
@@ -13,21 +16,26 @@ function Register() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormValue>();
 
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const password = useRef<string | null>(null);
-  password.current = watch("password");
-
   const onSubmit = async (data: FormValue) => {
     console.log(data);
     try {
       setLoading(true);
       // 데이터를 서버로 보내는 로직 추가
+      let createUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password);
+      console.log(createUser);
+
+      await firebase.database().ref("users").child(createUser.user.uid).set({
+        name: createUser.user.displayName,
+        image: createUser.user.photoURL,
+      });
     } catch (error) {
       setErrorFromSubmit(error.message);
       setLoading(false);
@@ -51,79 +59,9 @@ function Register() {
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <input
-              placeholder="Name"
-              {...register("name", { required: true, maxLength: 10 })}
-              className="border rounded-md p-2 w-full mt-4"
-            />
-            {errors.name && (
-              <p className="text-red-500">
-                <span className="inline-block align-middle mb-2.5">⚠ </span>
-                This name field is required
-              </p>
-            )}
-            {errors.name?.type === "maxLength" && (
-              <p className="text-red-500">
-                Your input exceeds the maximum length
-              </p>
-            )}
-
-            <input
-              type="email"
-              placeholder="Email"
-              {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
-              className="border-none rounded-md p-2 w-full mt-4"
-            />
-            {errors.email && (
-              <p className="text-red-500">
-                <span className="inline-block align-middle">⚠ </span>
-                This email field is required
-              </p>
-            )}
-
-            <input
-              type="password"
-              placeholder="Password"
-              {...register("password", { required: true, minLength: 6 })}
-              className="border-none rounded-md p-2 w-full mt-4"
-            />
-            {errors.password && errors.password.type === "required" && (
-              <p className="text-red-500">
-                <span className="inline-block align-middle">⚠ </span>
-                This password field is required
-              </p>
-            )}
-            {errors.password && errors.password.type === "minLength" && (
-              <p className="text-red-500">
-                Password must have at least 6 characters
-              </p>
-            )}
-
-            <input
-              type="password"
-              placeholder="Password Confirm"
-              {...register("password_confirm", {
-                required: true,
-                validate: (value) => value === password.current,
-              })}
-              className="border-none rounded-md p-2 w-full mt-4"
-            />
-            {errors.password_confirm &&
-              errors.password_confirm.type === "required" && (
-                <p className="text-red-500">
-                  <span className="inline-block align-middle">⚠ </span>
-                  This password confirm field is required
-                </p>
-              )}
-            {errors.password_confirm &&
-              errors.password_confirm.type === "validate" && (
-                <p className="text-red-500">The passwords do not match</p>
-              )}
-
-            {errorFromSubmit && (
-              <p className="text-red-500">{errorFromSubmit}</p>
-            )}
-
+            <NameInput register={register} errors={errors} />
+            <EmailInput register={register} errors={errors} />
+            <PasswordInput register={register} errors={errors} />
             <input
               type="submit"
               disabled={loading}
