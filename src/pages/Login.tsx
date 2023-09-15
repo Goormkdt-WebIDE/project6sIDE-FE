@@ -11,7 +11,7 @@ interface FormValue {
   password_confirm: string;
 }
 
-function Register() {
+function Login() {
   const {
     register,
     handleSubmit,
@@ -88,4 +88,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
