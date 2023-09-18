@@ -3,13 +3,8 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
-
-interface FormValue {
-  name: string;
-  email: string;
-  password: string;
-  password_confirm: string;
-}
+import { FormValue } from "./Register";
+import SubmitButton from "../components/SubmitButton";
 
 function Login() {
   const {
@@ -51,7 +46,10 @@ function Login() {
   return (
     <div
       className="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center"
-      style={{ backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/background.jpeg')" }}
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/background.jpeg')",
+      }}
     >
       <div className="text-center items-center w-full">
         <div className="flex flex-col items-center justify-center h-screen">
@@ -65,20 +63,20 @@ function Login() {
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
-
             <EmailInput register={register} errors={errors} />
             <PasswordInput register={register} errors={errors} />
 
-            <input
-              type="submit"
-              disabled={loading}
-              value="Sign in"
-              className="bg-blue-400 text-white text-uppercase border-none rounded-md p-2 w-full my-4 text-xl font-thin letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80"
-            />
-            <Link to="/register" className="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2">
+            <SubmitButton text="Sign In" loading={loading} />
+            <Link
+              to="/register"
+              className="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2"
+            >
               REGISTER
             </Link>
-            <Link to="/" className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4">
+            <Link
+              to="/password-reset"
+              className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4"
+            >
               PASSWORD RESET
             </Link>
           </form>
