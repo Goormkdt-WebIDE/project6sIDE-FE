@@ -1,25 +1,29 @@
 import React from "react";
 import { UseFormRegister, UseFormReturn } from "react-hook-form";
+import { FormValue } from "../pages/Register";
 
-interface FormValue {
-  name: string;
-  email: string;
-  password: string;
-  password_confirm: string;
-}
-
-interface PasswordInputProps {
+type Props = {
   register: UseFormRegister<FormValue>;
   errors: UseFormReturn<FormValue>["formState"]["errors"];
-}
+  placeholder?: string;
+  register_type?: "password" | "password_confirm";
+};
 
-const PasswordInput: React.FC<PasswordInputProps> = ({ register, errors }) => {
+const PasswordInput = ({
+  register,
+  errors,
+  placeholder,
+  register_type,
+}: Props) => {
   return (
     <>
       <input
         type="password"
-        placeholder="Password"
-        {...register("password", { required: true, minLength: 6 })}
+        placeholder={placeholder ? placeholder : "Password"}
+        {...register(register_type ? register_type : "password", {
+          required: true,
+          minLength: 6,
+        })}
         className="border-none rounded-md p-2 w-full mt-4"
       />
       {errors.password && errors.password.type === "required" && (

@@ -1,43 +1,39 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import NameInput from "../components/NameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
+import { FormValue } from "./Register";
 import SubmitButton from "../components/SubmitButton";
-import axios from "axios";
 
-export type FormValue = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-function Register() {
+function PasswordReset() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormValue>();
 
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  const password = useRef<string | null>(null);
+  password.current = watch("password");
 
   const onSubmit = async (data: FormValue) => {
-    console.log("data", data);
+    console.log(data);
     try {
       setLoading(true);
-      const userResponse = await axios.post(
-        "http://www.sside.shop/user/signUp",
-        {
-          username: data.name,
-          email: data.email,
-          password: data.password,
-        }
-      );
-      window.alert(userResponse.data);
-      navigate("/login");
+      // 데이터를 서버로 보내는 로직 추가
+      let createUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password);
+      console.log(createUser);
+
+      await firebase.database().ref("users").child(createUser.user.uid).set({
+        name: createUser.user.displayName,
+        image: createUser.user.photoURL,
+      });
     } catch (error) {
       setErrorFromSubmit(error.message);
       setLoading(false);
@@ -61,18 +57,33 @@ function Register() {
             6S IDE
           </h1>
           <h3 className="text-black text-3xl pb-4 mb-2 border-none font-thin">
-            Register
+            Password Reset
           </h3>
           <form
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <NameInput register={register} errors={errors} />
             <EmailInput register={register} errors={errors} />
             <PasswordInput register={register} errors={errors} />
-            <SubmitButton text="Register" loading={loading} />
-            <Link to="/login" className="text-gray-600 text-sm mt-4">
-              Already have an account? Sign in
+            <PasswordInput
+              register={register}
+              errors={errors}
+              placeholder="New Password"
+              register_type="password_confirm"
+            />
+
+            <SubmitButton text="Submit" loading={loading} />
+            <Link
+              to="/register"
+              className="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2"
+            >
+              REGISTER
+            </Link>
+            <Link
+              to="/login"
+              className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4"
+            >
+              LOG IN
             </Link>
           </form>
         </div>
@@ -81,4 +92,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default PasswordReset;

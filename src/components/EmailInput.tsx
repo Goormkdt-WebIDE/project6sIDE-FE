@@ -1,24 +1,20 @@
 import React from "react";
 import { UseFormRegister, UseFormReturn } from "react-hook-form";
+import { FormValue } from "../pages/Register";
 
-interface FormValue {
-  name: string;
-  email: string;
-  password: string;
-  password_confirm: string;
-}
-
-interface EmailInputProps {
+type Props = {
   register: UseFormRegister<FormValue>;
   errors: UseFormReturn<FormValue>["formState"]["errors"];
-}
+  placeholder?: string;
+};
 
-const EmailInput: React.FC<EmailInputProps> = ({ register, errors }) => {
+const EmailInput = ({ register, errors, placeholder }: Props) => {
   return (
     <>
       <input
         type="email"
         placeholder="Email"
+        placeholder={placeholder ? placeholder : "Email"}
         {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
         className="border-none rounded-md p-2 w-full mt-4"
       />
