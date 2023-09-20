@@ -13,6 +13,7 @@ const EmailInput = ({ register, errors, placeholder }: Props) => {
     <>
       <input
         type="email"
+        placeholder="Email"
         placeholder={placeholder ? placeholder : "Email"}
         {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
         className="border-none rounded-md p-2 w-full mt-4"
