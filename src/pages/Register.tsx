@@ -27,11 +27,13 @@ function Register() {
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
+
       const response = await axios.post("http://www.sside.shop/user/signUp", {
         username: data.name,
         email: data.email,
         password: data.password,
       });
+
       window.alert(response.data);
       navigate("/login");
     } catch (error) {
