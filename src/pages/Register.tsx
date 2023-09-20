@@ -25,18 +25,14 @@ function Register() {
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormValue) => {
-    console.log("data", data);
     try {
       setLoading(true);
-      const userResponse = await axios.post(
-        "http://www.sside.shop/user/signUp",
-        {
-          username: data.name,
-          email: data.email,
-          password: data.password,
-        }
-      );
-      window.alert(userResponse.data);
+      const response = await axios.post("http://www.sside.shop/user/signUp", {
+        username: data.name,
+        email: data.email,
+        password: data.password,
+      });
+      window.alert(response.data);
       navigate("/login");
     } catch (error) {
       setErrorFromSubmit(error.message);
