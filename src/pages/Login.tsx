@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
-import { FormValue } from "./Register";
+
 import SubmitButton from "../components/SubmitButton";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { FormValue, login } from "../service/http-requests/user-api";
 
 function Login() {
   const {
@@ -24,10 +25,7 @@ function Login() {
     try {
       setLoading(true);
 
-      await axios.post("http://www.sside.shop/user/login", {
-        email: data.email,
-        password: data.password,
-      });
+      await login(data);
 
       navigate("/");
     } catch (error) {

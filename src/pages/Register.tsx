@@ -5,14 +5,11 @@ import NameInput from "../components/NameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
-import axios, { AxiosError } from "axios";
-
-export type FormValue = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirm: string;
-};
+import { AxiosError } from "axios";
+import {
+  FormValue,
+  register as registerAPI,
+} from "../service/http-requests/user-api";
 
 function Register() {
   const {
@@ -30,11 +27,7 @@ function Register() {
     try {
       setLoading(true);
 
-      const response = await axios.post("http://www.sside.shop/user/signUp", {
-        username: data.name,
-        email: data.email,
-        password: data.password,
-      });
+      const response = await registerAPI(data);
 
       window.alert(response.data);
       navigate("/login");

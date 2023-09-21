@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
-import { FormValue } from "./Register";
 import SubmitButton from "../components/SubmitButton";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { FormValue, passwordReset } from "../service/http-requests/user-api";
 
 function PasswordReset() {
   const {
@@ -27,11 +27,7 @@ function PasswordReset() {
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-      await axios.post("http://www.sside.shop/user/resetPassword", {
-        email: data.email,
-        password: data.password,
-        newPassword: data.password_confirm,
-      });
+      await passwordReset(data);
       navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError;
