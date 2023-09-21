@@ -1,25 +1,23 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
-import { FormValue } from "./Register";
+
 import SubmitButton from "../components/SubmitButton";
-import axios from "axios";
+import { AxiosError } from "axios";
+import { FormValue, login } from "../service/http-requests/user-api";
 
 function Login() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormValue>();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const password = useRef<string | null>(null);
-  password.current = watch("password");
 
   const navigate = useNavigate();
 
@@ -27,14 +25,12 @@ function Login() {
     try {
       setLoading(true);
 
-      const response = await axios.post("http://www.sside.shop/user/login", {
-        "email": data.email,
-        "password": data.password,
-      });
+      await login(data);
 
       navigate("/");
-    } catch(error) {
-      setErrorFromSubmit(error.message);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      setErrorFromSubmit(axiosError.message);
       setLoading(false);
       setTimeout(() => {
         setErrorFromSubmit("");

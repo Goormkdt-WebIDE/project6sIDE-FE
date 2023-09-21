@@ -5,13 +5,11 @@ import NameInput from "../components/NameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
-import axios from "axios";
-
-export type FormValue = {
-  name: string;
-  email: string;
-  password: string;
-};
+import { AxiosError } from "axios";
+import {
+  FormValue,
+  register as registerAPI,
+} from "../service/http-requests/user-api";
 
 function Register() {
   const {
@@ -20,6 +18,7 @@ function Register() {
     formState: { errors },
   } = useForm<FormValue>();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -28,16 +27,13 @@ function Register() {
     try {
       setLoading(true);
 
-      const response = await axios.post("http://www.sside.shop/user/signUp", {
-        username: data.name,
-        email: data.email,
-        password: data.password,
-      });
+      const response = await registerAPI(data);
 
       window.alert(response.data);
       navigate("/login");
     } catch (error) {
-      setErrorFromSubmit(error.message);
+      const axiosError = error as AxiosError;
+      setErrorFromSubmit(axiosError.message);
       setLoading(false);
       setTimeout(() => {
         setErrorFromSubmit("");
