@@ -5,12 +5,13 @@ import NameInput from "../components/NameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export type FormValue = {
   name: string;
   email: string;
   password: string;
+  password_confirm: string;
 };
 
 function Register() {
@@ -20,6 +21,7 @@ function Register() {
     formState: { errors },
   } = useForm<FormValue>();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +39,8 @@ function Register() {
       window.alert(response.data);
       navigate("/login");
     } catch (error) {
-      setErrorFromSubmit(error.message);
+      const axiosError = error as AxiosError;
+      setErrorFromSubmit(axiosError.message);
       setLoading(false);
       setTimeout(() => {
         setErrorFromSubmit("");
