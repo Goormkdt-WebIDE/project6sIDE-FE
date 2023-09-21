@@ -28,7 +28,6 @@ function Login() {
       setLoading(true);
 
       const response = await axios.post("http://www.sside.shop/user/login", {
-        // "username": data.username,
         "email": data.email,
         "password": data.password,
       });
