@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import { FormValue } from "./Register";
 import SubmitButton from "../components/SubmitButton";
+import axios, { AxiosError } from "axios";
 
 function PasswordReset() {
   const {
@@ -14,28 +15,27 @@ function PasswordReset() {
     formState: { errors },
   } = useForm<FormValue>();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const password = useRef<string | null>(null);
   password.current = watch("password");
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: FormValue) => {
-    console.log(data);
     try {
       setLoading(true);
-      // 데이터를 서버로 보내는 로직 추가
-      let createUser = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(data.email, data.password);
-      console.log(createUser);
-
-      await firebase.database().ref("users").child(createUser.user.uid).set({
-        name: createUser.user.displayName,
-        image: createUser.user.photoURL,
+      await axios.post("http://www.sside.shop/user/resetPassword", {
+        email: data.email,
+        password: data.password,
+        newPassword: data.password_confirm,
       });
+      navigate("/login");
     } catch (error) {
-      setErrorFromSubmit(error.message);
+      const axiosError = error as AxiosError;
+      setErrorFromSubmit(axiosError.message);
       setLoading(false);
       setTimeout(() => {
         setErrorFromSubmit("");
