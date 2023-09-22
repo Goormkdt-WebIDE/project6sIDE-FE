@@ -24,21 +24,23 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const notify = (message: string) => {
+  const notifySuccess = (message: string) => {
     toast.success(message);
+  };
+
+  const notifyError = (message: string) => {
+    toast.error(message);
   };
 
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-
       const response = await registerAPI(data);
-      //window.alert(response.data);
-      notify(response.data);
+      notifySuccess(response.data);
       navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError;
-      setErrorFromSubmit(axiosError.message);
+      notifyError(axiosError.message);
       setLoading(false);
       setTimeout(() => {
         setErrorFromSubmit("");
@@ -70,7 +72,7 @@ function Register() {
               <NameInput register={register} errors={errors} />
               <EmailInput register={register} errors={errors} />
               <PasswordInput register={register} errors={errors} />
-              <SubmitButton text="Register" loading={loading} notify={notify} />
+              <SubmitButton text="Register" loading={loading} />
               <Link to="/login" className="text-gray-600 text-sm mt-4">
                 Already have an account? Sign in
               </Link>
