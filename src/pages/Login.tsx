@@ -29,7 +29,7 @@ function Login() {
       setLoading(true);
       await login(data);
       notifySuccess("로그인에 성공했습니다.");
-      navigate("/");
+      navigate("/workspace");
     } catch (error) {
       const axiosError = error as AxiosError;
       const message = `로그인에 실패했습니다. : ${axiosError.code}`;
