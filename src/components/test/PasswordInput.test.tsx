@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import PasswordInput, { RegisterType } from "../PasswordInput";
 import { FieldError } from "react-hook-form";
 import { render, screen } from "@testing-library/react";
+import React from "react";
 
 describe("PasswordInput", () => {
   const register = jest.fn();

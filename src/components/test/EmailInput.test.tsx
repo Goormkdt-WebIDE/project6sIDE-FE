@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import EmailInput from "../EmailInput";
 import { FieldError } from "react-hook-form";
+import React from "react";
 
 describe("EmailInput", () => {
   const register = jest.fn();
