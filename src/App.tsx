@@ -5,6 +5,7 @@ import Main from "./pages/Main";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import PasswordReset from "./pages/PasswordReset";
+import React from "react";
 
 function App() {
   return (
