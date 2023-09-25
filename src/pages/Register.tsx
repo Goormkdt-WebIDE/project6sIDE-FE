@@ -45,7 +45,7 @@ function Register() {
         className="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/background.jpeg')",
+            "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/background.jpeg')",
         }}
       >
         <div className="text-center items-center w-full">
