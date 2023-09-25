@@ -1,6 +1,6 @@
 import React from "react";
 import { UseFormRegister, UseFormReturn } from "react-hook-form";
-import { FormValue } from "../pages/Register";
+import { FormValue } from "../service/http-requests/user-api";
 
 type Props = {
   register: UseFormRegister<FormValue>;
@@ -17,7 +17,7 @@ const NameInput = ({ register, errors, placeholder }: Props) => {
         className="border rounded-md p-2 w-full mt-4"
       />
       {errors.name && (
-        <p className="text-red-500">
+        <p className="text-red-500" role="alert">
           <span className="inline-block align-middle mb-2.5">⚠ </span>
           This name field is required
         </p>
