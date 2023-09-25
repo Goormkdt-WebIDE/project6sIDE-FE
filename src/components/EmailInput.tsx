@@ -18,7 +18,7 @@ const EmailInput = ({ register, errors, placeholder }: Props) => {
         className="border-none rounded-md p-2 w-full mt-4"
       />
       {errors.email && (
-        <p className="text-red-500">
+        <p className="text-red-500" role="alert">
           <span className="inline-block align-middle">⚠ </span>
           This email field is required
         </p>
