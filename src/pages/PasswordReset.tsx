@@ -6,6 +6,7 @@ import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
 import { AxiosError } from "axios";
 import { FormValue, passwordReset } from "../service/http-requests/user-api";
+import { notifyError, notifySuccess } from "../service/toast";
 
 function PasswordReset() {
   const {
@@ -27,15 +28,15 @@ function PasswordReset() {
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-      await passwordReset(data);
+      const response = await passwordReset(data);
+      notifySuccess(response.data);
       navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError;
-      setErrorFromSubmit(axiosError.message);
+      const message = `비밀번호 변경에 실패했습니다. ${axiosError.code}`;
+      notifyError(message);
+      setErrorFromSubmit(message);
       setLoading(false);
-      setTimeout(() => {
-        setErrorFromSubmit("");
-      }, 5000);
     }
   };
 

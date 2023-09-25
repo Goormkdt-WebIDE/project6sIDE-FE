@@ -7,6 +7,7 @@ import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
 import { AxiosError } from "axios";
 import { FormValue, login } from "../service/http-requests/user-api";
+import { notifyError, notifySuccess } from "../service/toast";
 
 function Login() {
   const {
@@ -24,17 +25,15 @@ function Login() {
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-
       await login(data);
-
+      notifySuccess("로그인에 성공했습니다.");
       navigate("/");
     } catch (error) {
       const axiosError = error as AxiosError;
-      setErrorFromSubmit(axiosError.message);
+      const message = `로그인에 실패하였습니다. : ${axiosError.code}`;
+      notifyError(message);
+      setErrorFromSubmit(message);
       setLoading(false);
-      setTimeout(() => {
-        setErrorFromSubmit("");
-      }, 5000);
     }
   };
 

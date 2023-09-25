@@ -10,7 +10,7 @@ import {
   FormValue,
   register as registerAPI,
 } from "../service/http-requests/user-api";
-import { toast, ToastContainer } from "react-toastify";
+import { notifyError, notifySuccess } from "../service/toast";
 
 function Register() {
   const {
@@ -24,14 +24,6 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const notifySuccess = (message: string) => {
-    toast.success(message);
-  };
-
-  const notifyError = (message: string) => {
-    toast.error(message);
-  };
-
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
@@ -40,11 +32,10 @@ function Register() {
       navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError;
-      notifyError(axiosError.message);
+      const message = `회원가입에 실패했습니다. : ${axiosError.code}`;
+      notifyError(message);
+      setErrorFromSubmit(message);
       setLoading(false);
-      setTimeout(() => {
-        setErrorFromSubmit("");
-      }, 5000);
     }
   };
 
