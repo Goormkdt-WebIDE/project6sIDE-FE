@@ -11,8 +11,10 @@
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "ace-builds": "^1.28.0",
     "axios": "^1.5.0",
     "react": "^18.2.0",
+    "react-ace": "^10.1.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
     "react-router-dom": "^6.16.0",
