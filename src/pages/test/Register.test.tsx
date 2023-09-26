@@ -8,12 +8,13 @@ import { withAuthContext, withRouter } from "../../test/utils";
 import { Route } from "react-router-dom";
 
 const loginPageParagraph = "로그인 페이지 입니다.";
+const testName = "test";
+const testEmail = "test@gmail.com";
+const testPassword = "password";
 
 describe("Register", () => {
   const fakeAuthObj = {
     register: jest.fn(),
-    login: jest.fn(),
-    passwordReset: jest.fn(),
   };
 
   afterEach(() => {
@@ -32,14 +33,11 @@ describe("Register", () => {
 
     renderRegister();
 
-    await userEvent.type(screen.getByPlaceholderText("Name"), "test");
+    await userEvent.type(screen.getByPlaceholderText("Name"), testName);
 
-    await userEvent.type(
-      screen.getByPlaceholderText("Email"),
-      "test@gmail.com"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Email"), testEmail);
 
-    await userEvent.type(screen.getByPlaceholderText("Password"), "password");
+    await userEvent.type(screen.getByPlaceholderText("Password"), testPassword);
 
     await userEvent.click(screen.getByRole("button"));
 
@@ -53,14 +51,11 @@ describe("Register", () => {
 
     renderRegister();
 
-    await userEvent.type(screen.getByPlaceholderText("Name"), "test");
+    await userEvent.type(screen.getByPlaceholderText("Name"), testName);
 
-    await userEvent.type(
-      screen.getByPlaceholderText("Email"),
-      "test@gmail.com"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Email"), testEmail);
 
-    await userEvent.type(screen.getByPlaceholderText("Password"), "password");
+    await userEvent.type(screen.getByPlaceholderText("Password"), testPassword);
 
     await userEvent.click(screen.getByRole("button"));
 
