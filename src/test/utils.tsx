@@ -1,5 +1,6 @@
 import { MemoryRouter, Routes } from "react-router-dom";
 import { AuthContext, AuthContextProps } from "../context/AuthContext";
+import { AxiosResponse } from "axios";
 
 export function withRouter(routes: React.ReactElement, initialEntry = "/") {
   return (
@@ -11,9 +12,22 @@ export function withRouter(routes: React.ReactElement, initialEntry = "/") {
 
 export function withAuthContext(
   children: React.ReactElement,
-  authObject: AuthContextProps
+  authObject: Partial<AuthContextProps> = {}
 ) {
+  const completeAuthObject: AuthContextProps = {
+    login:
+      authObject.login ||
+      jest.fn().mockResolvedValue({} as AxiosResponse<unknown, unknown>),
+    register:
+      authObject.register ||
+      jest.fn().mockResolvedValue({} as AxiosResponse<unknown, unknown>),
+    passwordReset:
+      authObject.passwordReset ||
+      jest.fn().mockResolvedValue({} as AxiosResponse<unknown, unknown>),
+  };
   return (
-    <AuthContext.Provider value={authObject}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={completeAuthObject}>
+      {children}
+    </AuthContext.Provider>
   );
 }
