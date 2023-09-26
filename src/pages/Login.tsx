@@ -6,8 +6,9 @@ import PasswordInput from "../components/PasswordInput";
 
 import SubmitButton from "../components/SubmitButton";
 import { AxiosError } from "axios";
-import { FormValue, login } from "../service/http-requests/user-api";
+import { FormValue } from "../service/http-requests/user-api";
 import { notifyError, notifySuccess } from "../service/toast";
+import { useAuthContext } from "../context/AuthContext";
 
 function Login() {
   const {
@@ -19,6 +20,7 @@ function Login() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ function Login() {
       navigate("/");
     } catch (error) {
       const axiosError = error as AxiosError;
-      const message = `로그인에 실패하였습니다. : ${axiosError.code}`;
+      const message = `로그인에 실패했습니다. : ${axiosError.code}`;
       notifyError(message);
       setErrorFromSubmit(message);
       setLoading(false);
