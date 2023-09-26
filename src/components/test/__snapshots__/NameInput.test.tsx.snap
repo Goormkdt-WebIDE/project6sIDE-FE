@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NameInput 스냅샷 테스트 1`] = `
+<DocumentFragment>
+  <input
+    class="border rounded-md p-2 w-full mt-4"
+    placeholder="Name"
+  />
+</DocumentFragment>
+`;
