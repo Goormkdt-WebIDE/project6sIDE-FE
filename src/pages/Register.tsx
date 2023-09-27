@@ -6,11 +6,9 @@ import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
 import { AxiosError } from "axios";
-import {
-  FormValue,
-  register as registerAPI,
-} from "../service/http-requests/user-api";
+import { FormValue } from "../service/http-requests/user-api";
 import { notifyError, notifySuccess } from "../service/toast";
+import { useAuthContext } from "../context/AuthContext";
 
 function Register() {
   const {
@@ -18,6 +16,8 @@ function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValue>();
+
+  const { register: registerAPI } = useAuthContext();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
@@ -28,7 +28,7 @@ function Register() {
     try {
       setLoading(true);
       const response = await registerAPI(data);
-      notifySuccess(response.data);
+      notifySuccess(response.data as string);
       navigate("/login");
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -45,7 +45,7 @@ function Register() {
         className="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/background.jpeg')",
+            "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/background.jpeg')",
         }}
       >
         <div className="text-center items-center w-full">

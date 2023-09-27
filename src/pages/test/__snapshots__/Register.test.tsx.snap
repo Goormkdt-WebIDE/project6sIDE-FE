@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Register 스냅샷 테스트 1`] = `
+<DocumentFragment>
+  <div
+    class="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center"
+  >
+    <div
+      class="text-center items-center w-full"
+    >
+      <div
+        class="flex flex-col items-center justify-center h-screen"
+      >
+        <h1
+          class="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin"
+        >
+          6S IDE
+        </h1>
+        <h3
+          class="text-black text-3xl pb-4 mb-2 border-none font-thin"
+        >
+          Register
+        </h3>
+        <form
+          class="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
+        >
+          <input
+            class="border rounded-md p-2 w-full mt-4"
+            name="name"
+            placeholder="Name"
+          />
+          <input
+            class="border-none rounded-md p-2 w-full mt-4"
+            name="email"
+            placeholder="Email"
+            type="email"
+          />
+          <input
+            class="border-none rounded-md p-2 w-full mt-4"
+            name="password"
+            placeholder="Password"
+            type="password"
+          />
+          <button
+            class="bg-blue-400 text-white text-uppercase border-none rounded-md p-2 w-full my-4 text-xl font-thin letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80 cursor-pointer"
+            type="submit"
+          >
+            Register
+          </button>
+          <a
+            class="text-gray-600 text-sm mt-4"
+            href="/login"
+          >
+            Already have an account? Sign in
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div
+    class="Toastify"
+  />
+</DocumentFragment>
+`;
