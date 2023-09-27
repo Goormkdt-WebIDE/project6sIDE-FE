@@ -1,0 +1,38 @@
+{
+  "id": "1004",
+  "name": "web-ide-project",
+  "email": "test@gmail.com",
+  "directories": [
+    {
+      "id": "1",
+      "name": "depth1 디렉토리",
+      "directories": [
+        {
+          "id": "2",
+          "name": "depth2 디렉토리 Domain",
+          "directories": [
+            {
+              "id": "3",
+              "name": "depth3 디렉토리 DTO",
+              "directories": [],
+              "codes": [
+                {
+                  "id": "1004123",
+                  "name": "DTO.java",
+                  "text": "DTO 코드 blah blah"
+                }
+              ]
+            }
+          ],
+          "codes": [
+            {
+              "id": "100412",
+              "name": "User.java",
+              "text": "User 코드 blah blah"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
