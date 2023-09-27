@@ -14,9 +14,9 @@ export interface AuthContextProps {
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  login: () => Promise.reject("No AuthProvider"),
-  register: () => Promise.reject("No AuthProvider"),
-  passwordReset: () => Promise.reject("No AuthProvider"),
+  login,
+  register,
+  passwordReset,
 });
 
 type Props = {
