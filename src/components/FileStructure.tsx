@@ -6,12 +6,14 @@ type Props = {
   project: Project;
   onClick: (file: Code | null) => void;
   onToggleIsOpened: (path: number[]) => void;
+  onSelectFileOrDirectory: (path: number[]) => void;
 };
 
 export default function FileStructure({
   project,
   onClick,
   onToggleIsOpened,
+  onSelectFileOrDirectory,
 }: Props) {
   return (
     <nav className="grow overflow-x-scroll overflow-y-scroll bg-white">
@@ -22,6 +24,7 @@ export default function FileStructure({
           directory={d}
           onClick={onClick}
           onToggleIsOpened={onToggleIsOpened}
+          onSelectFileOrDirectory={onSelectFileOrDirectory}
           path={[index]}
         />
       ))}

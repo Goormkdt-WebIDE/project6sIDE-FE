@@ -8,6 +8,7 @@ type Props = {
   directory: Directories;
   onClick: (file: Code | null) => void;
   onToggleIsOpened: (path: number[]) => void;
+  onSelectFileOrDirectory: (path: number[]) => void;
   path: number[];
 };
 
@@ -15,15 +16,19 @@ export default function Directory({
   directory,
   onClick,
   onToggleIsOpened,
+  onSelectFileOrDirectory,
   path,
 }: Props) {
   return (
     <div className="ml-5">
       <div
-        className="font-bold flex items-center cursor-pointer"
-        onClick={() => {
+        tabIndex={0}
+        className="font-bold flex items-center cursor-pointer hover:bg-slate-200 focus:border focus:bg-slate-200"
+        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           onClick(null);
           onToggleIsOpened(path);
+          onSelectFileOrDirectory(path);
+          (e.target as HTMLDivElement).focus();
         }}
       >
         <AiOutlineFolder />
@@ -37,12 +42,19 @@ export default function Directory({
             directory={subDirectory}
             onClick={onClick}
             onToggleIsOpened={onToggleIsOpened}
+            onSelectFileOrDirectory={onSelectFileOrDirectory}
             path={[...path, index]}
           />
         ))}
       {directory.isOpened &&
-        directory.codes?.map((code) => (
-          <File key={code.id} file={code} onClick={onClick} />
+        directory.codes?.map((code, index) => (
+          <File
+            key={code.id}
+            file={code}
+            onClick={onClick}
+            onSelectFileOrDirectory={onSelectFileOrDirectory}
+            path={[...path, index]}
+          />
         ))}
     </div>
   );

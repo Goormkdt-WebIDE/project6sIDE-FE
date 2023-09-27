@@ -52,6 +52,10 @@ export default function IDE() {
     );
   };
 
+  const onSelectFileOrDirectory = (path: number[]) => {
+    console.log(path);
+  };
+
   useEffect(() => {
     axios.get("/data/project.json").then((res) => {
       const project = res.data;
@@ -69,6 +73,7 @@ export default function IDE() {
             project={project}
             onClick={onClick}
             onToggleIsOpened={toggleIsOpened}
+            onSelectFileOrDirectory={onSelectFileOrDirectory}
           />
           <Editor file={file} />
         </div>
