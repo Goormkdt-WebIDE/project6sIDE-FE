@@ -1,49 +1,61 @@
-// ChatApp.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
+import { Client, IMessage } from "@stomp/stompjs";
+
+const colors = [
+  "#2196F3",
+  "#32c787",
+  "#00BCD4",
+  "#ff5652",
+  "#ffc107",
+  "#ff85af",
+  "#FF9800",
+  "#39bbb0",
+];
 
 function Chatting() {
   const [username, setUsername] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [stompClient, setStompClient] = useState<any>(null);
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
 
   const messageAreaRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const socket = new SockJS("/ws");
-    const client = Stomp.over(socket);
+    const socket = new SockJS("https://sside.shop/ws");
+    const client = new Client();
 
     const connectCallback = () => {
       client.subscribe("/topic/public", onMessageReceived);
 
       sendSystemMessage("joined");
-
-      connectingElement.style.display = "none";
     };
 
-    const errorCallback = (error: any) => {
+    const errorCallback = (error: string) => {
+      console.error("WebSocket error:", error);
       connectingElement.textContent =
         "Could not connect to WebSocket server. Please refresh this page to try again!";
       connectingElement.style.color = "red";
     };
 
-    client.connect({}, connectCallback, errorCallback);
+    client.webSocketFactory = () => socket;
+    client.onConnect = connectCallback;
+    client.onStompError = errorCallback;
+
+    client.activate();
 
     setStompClient(client);
 
     return () => {
       if (stompClient) {
-        stompClient.disconnect();
+        stompClient.deactivate();
         sendSystemMessage("left");
       }
     };
-  }, [username]);
+  }, []);
 
-  const onMessageReceived = (payload: any) => {
-    const message = JSON.parse(payload.body);
-    setMessages([...messages, message]);
+  const onMessageReceived = (message: IMessage) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
 
     if (messageAreaRef.current) {
       messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
@@ -58,7 +70,10 @@ function Chatting() {
         type: "SYSTEM",
         date: Date.now(),
       };
-      stompClient.send("/chat/sendMessage", {}, JSON.stringify(systemMessage));
+      stompClient.publish({
+        destination: "/chat/sendMessage",
+        body: JSON.stringify(systemMessage),
+      });
     }
   };
 
@@ -82,7 +97,10 @@ function Chatting() {
         type: "CHAT",
         date: Date.now(),
       };
-      stompClient.send("/chat/sendMessage", {}, JSON.stringify(chatMessage));
+      stompClient.publish({
+        destination: "/chat/sendMessage",
+        body: JSON.stringify(chatMessage),
+      });
 
       setMessage("");
     }
@@ -95,22 +113,22 @@ function Chatting() {
       <div className="p-4">
         <h1 className="text-2xl font-semibold">Chat Room</h1>
       </div>
-      <div className="bg-white p-4">
+      <div className="bg-white p-4" ref={messageAreaRef}>
         <ul>
           {messages.map((msg, index) => (
             <li key={index}>
-              {msg.type === "SYSTEM" ? (
-                <div className="event-message">{msg.content}</div>
+              {msg.headers["content-type"] === "SYSTEM" ? (
+                <div className="event-message">{msg.body}</div>
               ) : (
                 <div className="chat-message">
                   <i
                     className="w-6 h-6 mr-2"
-                    style={{ backgroundColor: getAvatarColor(msg.sender) }}
+                    style={{ backgroundColor: getAvatarColor(msg.body.sender) }}
                   >
-                    {msg.sender[0]}
+                    {msg.body.sender[0]}
                   </i>
-                  <span>{msg.sender}</span>
-                  <p>{msg.content}</p>
+                  <span>{msg.body.sender}</span>
+                  <p>{msg.body.content}</p>
                 </div>
               )}
             </li>
@@ -137,6 +155,15 @@ function Chatting() {
       </div>
     </div>
   );
+}
+
+function getAvatarColor(messageSender: string) {
+  let hash = 0;
+  for (let i = 0; i < messageSender.length; i++) {
+    hash = 31 * hash + messageSender.charCodeAt(i);
+  }
+  const index = Math.abs(hash % colors.length);
+  return colors[index];
 }
 
 export default Chatting;
