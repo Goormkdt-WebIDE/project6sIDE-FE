@@ -4,6 +4,7 @@ import Editor from "../components/Editor";
 import axios from "axios";
 import { Draft, produce } from "immer";
 import IDEHeader from "../components/IDEHeader";
+import TreeView from "../components/TreeView";
 
 export type Code = {
   id: string;
@@ -69,12 +70,7 @@ export default function IDE() {
       <IDEHeader />
       {project && (
         <div className="flex w-full h-full px-3 pb-10">
-          <FileStructure
-            project={project}
-            onClick={onClick}
-            onToggleIsOpened={toggleIsOpened}
-            onSelectFileOrDirectory={onSelectFileOrDirectory}
-          />
+          <TreeView data={project} onClick={onClick} />
           <Editor file={file} />
         </div>
       )}
