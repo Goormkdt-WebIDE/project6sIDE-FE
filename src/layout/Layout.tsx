@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout() {
   return (
-    <>
+    <main className="h-screen overflow-hidden pb-4">
       <Outlet />
       <ToastContainer
         position="top-center"
@@ -19,6 +19,6 @@ export default function Layout() {
         pauseOnHover
         theme="light"
       />
-    </>
+    </main>
   );
 }

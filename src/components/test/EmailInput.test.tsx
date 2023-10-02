@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import EmailInput from "../EmailInput";
+import EmailInput from "../form/EmailInput";
 import { FieldError } from "react-hook-form";
 import React from "react";
 

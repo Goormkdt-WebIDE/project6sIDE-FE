@@ -11,11 +11,17 @@
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "ace-builds": "^1.28.0",
     "axios": "^1.5.0",
+    "immer": "^10.0.2",
     "react": "^18.2.0",
+    "react-ace": "^10.1.0",
+    "react-arborist": "^3.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
+    "react-icons": "^4.11.0",
     "react-router-dom": "^6.16.0",
+    "react-select": "^5.7.5",
     "react-toastify": "^9.1.3"
   },
   "devDependencies": {
