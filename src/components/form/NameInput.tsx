@@ -1,6 +1,6 @@
 import React from "react";
 import { UseFormRegister, UseFormReturn } from "react-hook-form";
-import { FormValue } from "../service/http-requests/user-api";
+import { FormValue } from "../../service/http-requests/user-api";
 
 type Props = {
   register: UseFormRegister<FormValue>;

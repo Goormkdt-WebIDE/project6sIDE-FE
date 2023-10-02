@@ -4,7 +4,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
-import { Code } from "../pages/IDE";
+import { Code } from "./TreeView";
 
 type Props = {
   file: Code | null;

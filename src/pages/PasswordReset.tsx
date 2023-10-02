@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import EmailInput from "../components/EmailInput";
-import PasswordInput from "../components/PasswordInput";
-import SubmitButton from "../components/SubmitButton";
+import EmailInput from "../components/form/EmailInput";
+import PasswordInput from "../components/form/PasswordInput";
+import SubmitButton from "../components/form/SubmitButton";
 import { AxiosError } from "axios";
 import { FormValue } from "../service/http-requests/user-api";
 import { notifyError, notifySuccess } from "../service/toast";

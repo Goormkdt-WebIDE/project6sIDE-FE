@@ -6,7 +6,7 @@ import { BsFillFileEarmarkCodeFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 
-type Code = {
+export type Code = {
   id: string;
   name: string;
   text: string;
@@ -14,7 +14,7 @@ type Code = {
   children?: TreeNode[];
 };
 
-type Directory = {
+export type Directory = {
   id: string;
   name: string;
   directories?: Directory[];
@@ -26,7 +26,7 @@ type Directory = {
 type TreeNode = Directory | Code;
 
 type Props = {
-  data: Directory | Code;
+  data: Directory;
   onClick: (file: Code | null) => void;
 };
 
