@@ -1,5 +1,6 @@
 import React from "react";
 import { Tree, NodeRendererProps } from "react-arborist";
+import { IdObj } from "react-arborist/dist/types/utils";
 import { AiOutlineFolder } from "react-icons/ai";
 import { BiSolidRightArrow, BiSolidDownArrow } from "react-icons/bi";
 import { BsFillFileEarmarkCodeFill } from "react-icons/bs";
@@ -23,20 +24,28 @@ export type Directory = {
   children?: TreeNode[];
 };
 
-type TreeNode = Directory | Code;
+export type TreeNode = Directory | Code;
 
 type Props = {
   data: Directory;
   onClick: (file: Code | null) => void;
+  onCreate: ({
+    parentId,
+    index,
+    type,
+  }: {
+    parentId: string | null;
+    index: number;
+    type: string;
+  }) => IdObj | Promise<IdObj | null> | null;
+  onDelete: ({ ids }: { ids: string[] }) => void;
 };
 
-export default function TreeView({ data, onClick }: Props) {
-  const transformedData = transformData(data);
-  console.log(transformedData);
+export default function TreeView({ data, onClick, onCreate, onDelete }: Props) {
   return (
     <div className="flex flex-col">
-      <h2>{transformedData.name}</h2>
-      <Tree initialData={transformedData.children}>
+      <h2>{data.name}</h2>
+      <Tree data={data.children} onCreate={onCreate} onDelete={onDelete}>
         {(props) => <Node {...props} node={props.node} onClick={onClick} />}
       </Tree>
     </div>
@@ -107,32 +116,4 @@ function Node({
       </div>
     </div>
   );
-}
-
-function transformData(
-  inputData: Directory | Code,
-  isDirectory: boolean = true
-): TreeNode {
-  let children: TreeNode[] = [];
-  if (isDirectory) {
-    inputData.type = "directory";
-    const dirData = inputData as Directory;
-    if (dirData.directories && dirData.directories.length > 0) {
-      children = children.concat(
-        dirData.directories.map((dir) => transformData(dir, true))
-      );
-    }
-    if (dirData.codes && dirData.codes.length > 0) {
-      children = children.concat(
-        dirData.codes.map((code) => transformData(code, false))
-      );
-    }
-  } else {
-    inputData.type = "file";
-  }
-
-  return {
-    ...inputData,
-    children: children.length > 0 ? children : undefined,
-  };
 }

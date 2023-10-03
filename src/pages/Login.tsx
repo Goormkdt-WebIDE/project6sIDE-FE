@@ -20,14 +20,16 @@ function Login() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthContext();
+  const { login, onAuthStateChange } = useAuthContext();
 
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-      await login(data);
+      const res = await login(data);
+      document.cookie = `token=${res.data as string}; path=/`;
+      onAuthStateChange("login");
       notifySuccess("로그인에 성공했습니다.");
       navigate("/workspace");
     } catch (error) {
