@@ -1,5 +1,10 @@
 import React from "react";
+import Chatting from "../components/Chatting";
 
 export default function Main() {
-  return <div>여기는 메인페이지</div>;
+  return (
+    <div>
+      <Chatting />
+    </div>
+  );
 }
