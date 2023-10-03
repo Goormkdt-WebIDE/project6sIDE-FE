@@ -54,9 +54,21 @@ function Register() {
               className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <NameInput register={register} errors={errors} />
-              <EmailInput register={register} errors={errors} />
-              <PasswordInput register={register} errors={errors} />
+              <NameInput<FormValue>
+                register={register}
+                errors={errors}
+                name="name"
+              />
+              <EmailInput<FormValue>
+                register={register}
+                errors={errors}
+                name="email"
+              />
+              <PasswordInput<FormValue>
+                register={register}
+                errors={errors}
+                name="password"
+              />
               <SubmitButton text="Register" loading={loading} />
               <Link to="/login" className="text-gray-600 text-sm mt-4">
                 Already have an account? Sign in

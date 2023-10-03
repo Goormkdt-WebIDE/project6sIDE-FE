@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import EmailInput from "../form/EmailInput";
 import { FieldError } from "react-hook-form";
 import React from "react";
+import { FormValue } from "../../service/http-requests/user-api";
 
 describe("EmailInput", () => {
   const register = jest.fn();
@@ -29,10 +30,11 @@ describe("EmailInput", () => {
 
   function renderEmailInput(placeholder?: string, error?: FieldError) {
     return render(
-      <EmailInput
+      <EmailInput<FormValue>
         register={register}
         errors={{ email: error }}
         placeholder={placeholder}
+        name="email"
       />
     );
   }

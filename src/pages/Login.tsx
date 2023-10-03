@@ -55,8 +55,16 @@ function Login() {
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <EmailInput register={register} errors={errors} />
-            <PasswordInput register={register} errors={errors} />
+            <EmailInput<FormValue>
+              register={register}
+              errors={errors}
+              name="email"
+            />
+            <PasswordInput<FormValue>
+              register={register}
+              errors={errors}
+              name="password"
+            />
 
             <SubmitButton text="Sign In" loading={loading} />
             <Link

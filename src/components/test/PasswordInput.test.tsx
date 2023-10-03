@@ -1,8 +1,9 @@
 import "@testing-library/jest-dom";
-import PasswordInput, { RegisterType } from "../form/PasswordInput";
+import PasswordInput from "../form/PasswordInput";
 import { FieldError } from "react-hook-form";
 import { render, screen } from "@testing-library/react";
 import React from "react";
+import { FormValue } from "../../service/http-requests/user-api";
 
 describe("PasswordInput", () => {
   const register = jest.fn();
@@ -32,17 +33,13 @@ describe("PasswordInput", () => {
     expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 
-  function renderPasswordInput(
-    placeholder?: string,
-    error?: FieldError,
-    register_type?: RegisterType
-  ) {
+  function renderPasswordInput(placeholder?: string, error?: FieldError) {
     return render(
-      <PasswordInput
+      <PasswordInput<FormValue>
         register={register}
         errors={{ password: error }}
         placeholder={placeholder}
-        register_type={register_type}
+        name="password"
       />
     );
   }
