@@ -7,6 +7,7 @@ import {
   addRootDirectory as addRootDirectoryAPI,
   addRootCode as addRootCodeAPI,
   deleteDirectory as deleteDirectoryAPI,
+  deleteCode as deleteCodeAPI,
 } from "../service/http-requests/ide-api";
 
 const baseQuery = "project";
@@ -64,5 +65,17 @@ export default function useProjects(projectName: string) {
     }
   );
 
-  return { projectQuery, addRootDirectory, addRootCode, deleteDirectory };
+  const deleteCode = useMutation((codeId: string) => deleteCodeAPI(codeId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+    },
+  });
+
+  return {
+    projectQuery,
+    addRootDirectory,
+    addRootCode,
+    deleteDirectory,
+    deleteCode,
+  };
 }

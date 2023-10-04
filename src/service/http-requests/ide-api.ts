@@ -27,10 +27,16 @@ const route = {
 };
 
 export async function createNewProject(data: FormValue) {
-  return axios.post(route.CREATE_NEW_PROJECT, {
-    name: data.name,
-    email: data.email,
-  });
+  return axios.post(
+    route.CREATE_NEW_PROJECT,
+    {
+      name: data.name,
+      email: data.email,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 
 export async function getProject(data: FormValue) {

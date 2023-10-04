@@ -5,7 +5,7 @@ import {
   passwordReset,
   FormValue,
 } from "../service/http-requests/user-api";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export type User = {
   email: string;
@@ -42,6 +42,9 @@ export function AuthContextProvider({ children }: Props) {
   useEffect(() => {
     const token = getToken("token");
     const decodedUser = token && decodeToken(token);
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    }
     setUser(decodedUser);
   }, []);
 

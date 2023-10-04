@@ -23,6 +23,7 @@ export default function IDE() {
     addRootCode,
     addRootDirectory,
     deleteDirectory,
+    deleteCode,
     projectQuery: { data },
   } = useProjects(projectname as string);
 
@@ -63,7 +64,10 @@ export default function IDE() {
   }: {
     ids: string[];
     nodes: NodeApi<Code | Directory>[];
-  }) => {};
+  }) => {
+    deleteDirectory.mutate(ids[0]);
+    deleteCode.mutate(ids[0]);
+  };
 
   const onMove = (result) => {
     console.log(result);
