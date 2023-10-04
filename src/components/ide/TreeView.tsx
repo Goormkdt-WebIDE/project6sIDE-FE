@@ -1,5 +1,5 @@
 import React from "react";
-import { Tree, NodeRendererProps } from "react-arborist";
+import { Tree, NodeRendererProps, NodeApi } from "react-arborist";
 import { IdObj } from "react-arborist/dist/types/utils";
 import { AiOutlineFolder } from "react-icons/ai";
 import { BiSolidRightArrow, BiSolidDownArrow } from "react-icons/bi";
@@ -33,19 +33,62 @@ type Props = {
     parentId,
     index,
     type,
+    parentNode,
   }: {
     parentId: string | null;
     index: number;
     type: string;
+    parentNode: NodeApi<Code | Directory> | null;
   }) => IdObj | Promise<IdObj | null> | null;
-  onDelete: ({ ids }: { ids: string[] }) => void;
+  onDelete: ({
+    ids,
+    nodes,
+  }: {
+    ids: string[];
+    nodes: NodeApi<Code | Directory>[];
+  }) => void;
+  onMove: ({
+    dragIds,
+    parentId,
+    parentNode,
+    index,
+  }: {
+    dragIds: string[];
+    dragNodes: NodeApi<Directory | Code>[];
+    parentId: string | null;
+    parentNode: NodeApi<Directory | Code> | null;
+    index: number;
+  }) => void;
+  onRename: ({
+    id,
+    name,
+    node,
+  }: {
+    id: string;
+    name: string;
+    node: NodeApi<Code | Directory>;
+  }) => void;
 };
 
-export default function TreeView({ data, onClick, onCreate, onDelete }: Props) {
+export default function TreeView({
+  data,
+  onClick,
+  onCreate,
+  onDelete,
+  onMove,
+  onRename,
+}: Props) {
+  console.log(data);
   return (
     <div className="flex flex-col">
       <h2>{data.name}</h2>
-      <Tree data={data.children} onCreate={onCreate} onDelete={onDelete}>
+      <Tree
+        data={data.children}
+        onCreate={onCreate}
+        onDelete={onDelete}
+        onMove={onMove}
+        onRename={onRename}
+      >
         {(props) => <Node {...props} node={props.node} onClick={onClick} />}
       </Tree>
     </div>

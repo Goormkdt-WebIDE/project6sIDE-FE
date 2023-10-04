@@ -1,5 +1,5 @@
 import React from "react";
-import SubmitButton from "../components/form/SubmitButton";
+import NewProject from "../components/project/NewProject";
 
 function Main() {
   return (
@@ -15,9 +15,7 @@ function Main() {
           <h1 className="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin">
             6S IDE
           </h1>
-          <form className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90">
-            <SubmitButton text="새 프로젝트 생성" loading={false} />
-          </form>
+          <NewProject />
         </div>
       </div>
     </div>

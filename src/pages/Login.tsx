@@ -31,7 +31,7 @@ function Login() {
       document.cookie = `token=${res.data as string}; path=/`;
       onAuthStateChange("login");
       notifySuccess("로그인에 성공했습니다.");
-      navigate("/workspace");
+      navigate("/");
     } catch (error) {
       const axiosError = error as AxiosError;
       const message = `로그인에 실패했습니다. : ${axiosError.code}`;

@@ -8,12 +8,17 @@ import TreeView, {
   TreeNode,
 } from "../components/ide/TreeView";
 import { useAuthContext } from "../context/AuthContext";
+import { useParams } from "react-router-dom";
+import { BASE_URL } from "../common/constant";
+import { getProject } from "../service/http-requests/ide-api";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
   const [file, setFile] = useState<Code | null>(null);
 
   const { user } = useAuthContext();
+
+  const { projectname } = useParams();
 
   const onClick = (file: Code | null) => {
     setFile(file);
@@ -27,12 +32,25 @@ export default function IDE() {
     console.log(result);
   };
 
+  const onMove = (result) => {
+    console.log(result);
+  };
+
+  const onRename = (result) => {
+    console.log(result);
+  };
+
   useEffect(() => {
-    axios.get("/data/project.json").then((res) => {
-      const project = transformData(res.data);
-      setProject(project);
-    });
-  }, [user]);
+    if (user && projectname) {
+      getProject({
+        email: user.email,
+        name: projectname,
+      }).then((res) => {
+        const project = transformData(res.data);
+        setProject(project);
+      });
+    }
+  }, [user, projectname]);
 
   return (
     <>
@@ -44,6 +62,8 @@ export default function IDE() {
             onClick={onClick}
             onCreate={onCreate}
             onDelete={onDelete}
+            onMove={onMove}
+            onRename={onRename}
           />
           <Editor file={file} />
         </div>
