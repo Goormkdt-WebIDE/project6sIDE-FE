@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Editor from "../components/ide/Editor";
-import axios from "axios";
 import IDEHeader from "../components/ide/IDEHeader";
 import TreeView, {
   Code,
@@ -9,8 +8,8 @@ import TreeView, {
 } from "../components/ide/TreeView";
 import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from "../common/constant";
-import { getProject } from "../service/http-requests/ide-api";
+import useProjects from "../hook/useProjects";
+import { NodeApi } from "react-arborist";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -20,17 +19,51 @@ export default function IDE() {
 
   const { projectname } = useParams();
 
+  const {
+    addRootCode,
+    addRootDirectory,
+    deleteDirectory,
+    projectQuery: { data },
+  } = useProjects(projectname as string);
+
   const onClick = (file: Code | null) => {
     setFile(file);
   };
 
-  const onCreate = (result) => {
-    console.log(result);
+  const onCreate = ({
+    parentId,
+    index,
+    type,
+    parentNode,
+  }: {
+    parentId: string | null;
+    index: number;
+    type: string;
+    parentNode: NodeApi<Code | Directory> | null;
+  }) => {
+    if (!parentId && type === "internal") {
+      addRootDirectory.mutate({
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+    if (!parentId && type === "leaf") {
+      addRootCode.mutate({
+        text: "",
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+    return null;
   };
 
-  const onDelete = (result) => {
-    console.log(result);
-  };
+  const onDelete = ({
+    ids,
+    nodes,
+  }: {
+    ids: string[];
+    nodes: NodeApi<Code | Directory>[];
+  }) => {};
 
   const onMove = (result) => {
     console.log(result);
@@ -41,16 +74,10 @@ export default function IDE() {
   };
 
   useEffect(() => {
-    if (user && projectname) {
-      getProject({
-        email: user.email,
-        name: projectname,
-      }).then((res) => {
-        const project = transformData(res.data);
-        setProject(project);
-      });
+    if (user && projectname && data) {
+      setProject(transformData(data.data));
     }
-  }, [user, projectname]);
+  }, [user, projectname, data]);
 
   return (
     <>

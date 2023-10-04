@@ -125,7 +125,11 @@ function Node({
       }`}
     >
       <div className="flex items-center">
-        {node.isLeaf ? <BsFillFileEarmarkCodeFill /> : <AiOutlineFolder />}{" "}
+        {node.data.type === "file" ? (
+          <BsFillFileEarmarkCodeFill />
+        ) : (
+          <AiOutlineFolder />
+        )}{" "}
         {node.isEditing ? (
           <input
             type="text"
@@ -141,9 +145,9 @@ function Node({
         ) : (
           <h3>{node.data.name}</h3>
         )}
-        {!node.isLeaf && node.isClosed ? (
+        {node.data.type !== "file" && node.isClosed ? (
           <BiSolidRightArrow />
-        ) : !node.isLeaf && !node.isClosed ? (
+        ) : node.data.type !== "file" && !node.isClosed ? (
           <BiSolidDownArrow />
         ) : (
           ""
