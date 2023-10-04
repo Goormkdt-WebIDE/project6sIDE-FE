@@ -24,19 +24,19 @@ const route = {
   DELETE_PROJECT(projectId: string) {
     return BASE_URL + `/api/projects/${projectId}`;
   },
+  UPDATE_DIRECTORY(directoryId: string) {
+    return BASE_URL + `/api/projects/v2/${directoryId}/directories`;
+  },
+  UPDATE_CODE(codeId: string) {
+    return BASE_URL + `/api/projects/v2/${codeId}/code`;
+  },
 };
 
 export async function createNewProject(data: FormValue) {
-  return axios.post(
-    route.CREATE_NEW_PROJECT,
-    {
-      name: data.name,
-      email: data.email,
-    },
-    {
-      withCredentials: true,
-    }
-  );
+  return axios.post(route.CREATE_NEW_PROJECT, {
+    name: data.name,
+    email: data.email,
+  });
 }
 
 export async function getProject(data: FormValue) {
@@ -71,6 +71,19 @@ export async function deleteCode(codeId: string) {
   return axios.delete(route.DELETE_CODE(codeId));
 }
 
-export async function deleteProejct(projectId: string) {
+export async function deleteProject(projectId: string) {
   return axios.delete(route.DELETE_PROJECT(projectId));
+}
+
+export async function updateDirectory(name: string, directoryId: string) {
+  return axios.patch(route.UPDATE_DIRECTORY(directoryId), {
+    name,
+  });
+}
+
+export async function updateCode(name: string, text: string, codeId: string) {
+  return axios.patch(route.UPDATE_CODE(codeId), {
+    name,
+    text,
+  });
 }

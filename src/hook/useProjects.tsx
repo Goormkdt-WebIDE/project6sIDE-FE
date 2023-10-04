@@ -8,6 +8,8 @@ import {
   addRootCode as addRootCodeAPI,
   deleteDirectory as deleteDirectoryAPI,
   deleteCode as deleteCodeAPI,
+  updateDirectory as updateDirectoryAPI,
+  updateCode as updateCodeAPI,
 } from "../service/http-requests/ide-api";
 
 const baseQuery = "project";
@@ -71,11 +73,33 @@ export default function useProjects(projectName: string) {
     },
   });
 
+  const updateDirectory = useMutation(
+    ({ name, directoryId }: { name: string; directoryId: string }) =>
+      updateDirectoryAPI(name, directoryId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+      },
+    }
+  );
+
+  const updateCode = useMutation(
+    ({ name, text, codeId }: { name: string; text: string; codeId: string }) =>
+      updateCodeAPI(name, text, codeId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+      },
+    }
+  );
+
   return {
     projectQuery,
     addRootDirectory,
     addRootCode,
     deleteDirectory,
     deleteCode,
+    updateDirectory,
+    updateCode,
   };
 }

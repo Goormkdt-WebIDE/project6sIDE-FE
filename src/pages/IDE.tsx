@@ -24,6 +24,8 @@ export default function IDE() {
     addRootDirectory,
     deleteDirectory,
     deleteCode,
+    updateDirectory,
+    updateCode,
     projectQuery: { data },
   } = useProjects(projectname as string);
 
@@ -73,8 +75,28 @@ export default function IDE() {
     console.log(result);
   };
 
-  const onRename = (result) => {
-    console.log(result);
+  const onRename = ({
+    id,
+    name,
+    node,
+  }: {
+    id: string;
+    name: string;
+    node: NodeApi<Code | Directory>;
+  }) => {
+    console.log(node.data);
+    if (node.data.type === "directory") {
+      updateDirectory.mutate({
+        name,
+        directoryId: id,
+      });
+      return;
+    }
+    updateCode.mutate({
+      name,
+      text: (node.data as Code).text,
+      codeId: id,
+    });
   };
 
   useEffect(() => {
