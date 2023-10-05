@@ -45,6 +45,7 @@ export default function IDE() {
     if (directory && type === "internal") {
       addSubDirectory.mutate({
         name: "",
+        projectId: project?.id as string,
         directoryId: directory,
       });
     }
@@ -53,6 +54,7 @@ export default function IDE() {
       addCodeToSubDirectory.mutate({
         name: "",
         text: "",
+        projectId: project?.id as string,
         directoryId: directory,
       });
     }
@@ -76,8 +78,14 @@ export default function IDE() {
 
   const onDelete = ({ ids }: { ids: string[] }) => {
     ids.forEach((id) => {
-      deleteDirectory.mutate(id);
-      deleteCode.mutate(id);
+      deleteDirectory.mutate({
+        projectId: project?.id as string,
+        directoryId: id,
+      });
+      deleteCode.mutate({
+        projectId: project?.id as string,
+        codeId: id,
+      });
     });
   };
 
@@ -109,6 +117,7 @@ export default function IDE() {
     if (node.data.type === "directory") {
       updateDirectory.mutate({
         name,
+        projectId: project?.id as string,
         directoryId: id,
       });
       return;
@@ -116,6 +125,7 @@ export default function IDE() {
     updateCode.mutate({
       name,
       text: (node.data as Code).text,
+      projectId: project?.id as string,
       codeId: id,
     });
   };

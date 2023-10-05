@@ -61,8 +61,15 @@ export default function useProjects(projectName: string) {
   );
 
   const addSubDirectory = useMutation(
-    ({ name, directoryId }: { name: string; directoryId: string }) =>
-      addSubDirectoryAPI(name, directoryId),
+    ({
+      name,
+      projectId,
+      directoryId,
+    }: {
+      name: string;
+      projectId: string;
+      directoryId: string;
+    }) => addSubDirectoryAPI(name, projectId, directoryId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
@@ -74,12 +81,14 @@ export default function useProjects(projectName: string) {
     ({
       name,
       text,
+      projectId,
       directoryId,
     }: {
       name: string;
       text: string;
+      projectId: string;
       directoryId: string;
-    }) => addCodeToSubDirectoryAPI(name, text, directoryId),
+    }) => addCodeToSubDirectoryAPI(name, text, projectId, directoryId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
@@ -88,7 +97,8 @@ export default function useProjects(projectName: string) {
   );
 
   const deleteDirectory = useMutation(
-    (directoryId: string) => deleteDirectoryAPI(directoryId),
+    ({ projectId, directoryId }: { projectId: string; directoryId: string }) =>
+      deleteDirectoryAPI(projectId, directoryId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
@@ -96,15 +106,26 @@ export default function useProjects(projectName: string) {
     }
   );
 
-  const deleteCode = useMutation((codeId: string) => deleteCodeAPI(codeId), {
-    onSuccess: () => {
-      queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
-    },
-  });
+  const deleteCode = useMutation(
+    ({ projectId, codeId }: { projectId: string; codeId: string }) =>
+      deleteCodeAPI(projectId, codeId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+      },
+    }
+  );
 
   const updateDirectory = useMutation(
-    ({ name, directoryId }: { name: string; directoryId: string }) =>
-      updateDirectoryAPI(name, directoryId),
+    ({
+      name,
+      projectId,
+      directoryId,
+    }: {
+      name: string;
+      projectId: string;
+      directoryId: string;
+    }) => updateDirectoryAPI(name, projectId, directoryId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
@@ -113,8 +134,17 @@ export default function useProjects(projectName: string) {
   );
 
   const updateCode = useMutation(
-    ({ name, text, codeId }: { name: string; text: string; codeId: string }) =>
-      updateCodeAPI(name, text, codeId),
+    ({
+      name,
+      text,
+      projectId,
+      codeId,
+    }: {
+      name: string;
+      text: string;
+      projectId: string;
+      codeId: string;
+    }) => updateCodeAPI(name, text, projectId, codeId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);

@@ -11,31 +11,33 @@ const route = {
   GET_PROJECT: BASE_URL + "/api/projects",
   GET_ALL_PROJECTS: BASE_URL + "/api/projects/user",
   ADD_ROOT_DIRECTORY(projectId: string) {
-    return BASE_URL + `/api/projects/v2/${projectId}/directories`;
+    return BASE_URL + `/api/projects/${projectId}/directories`;
   },
   ADD_ROOT_CODE(projectId: string) {
-    return BASE_URL + `/api/projects/v2/${projectId}/code`;
+    return BASE_URL + `/api/projects/${projectId}/code`;
   },
-  ADD_SUB_DIRECTORY(directoryId: string) {
-    return BASE_URL + `/api/projects/v2/directories/${directoryId}`;
+  ADD_SUB_DIRECTORY(projectId: string, directoryId: string) {
+    return BASE_URL + `/api/projects/directories/${projectId}/${directoryId}`;
   },
-  ADD_CODE_TO_SUB_DIRECTORY(directoryId: string) {
-    return BASE_URL + `/api/projects/v2/directories/${directoryId}/code`;
+  ADD_CODE_TO_SUB_DIRECTORY(projectId: string, directoryId: string) {
+    return (
+      BASE_URL + `/api/projects/directories/${projectId}/${directoryId}/code`
+    );
   },
-  DELETE_DIRECTORY(directoryId: string) {
-    return BASE_URL + `/api/projects/v2/directories/${directoryId}`;
+  DELETE_DIRECTORY(projectId: string, directoryId: string) {
+    return BASE_URL + `/api/projects/directories/${projectId}/${directoryId}`;
   },
-  DELETE_CODE(codeId: string) {
-    return BASE_URL + `/api/projects/v2/${codeId}/code`;
+  DELETE_CODE(projectId: string, codeId: string) {
+    return BASE_URL + `/api/projects/${projectId}/${codeId}/code`;
   },
   DELETE_PROJECT(projectId: string) {
     return BASE_URL + `/api/projects/${projectId}`;
   },
-  UPDATE_DIRECTORY(directoryId: string) {
-    return BASE_URL + `/api/projects/v2/${directoryId}/directories`;
+  UPDATE_DIRECTORY(projectId: string, directoryId: string) {
+    return BASE_URL + `/api/projects/${projectId}/${directoryId}/directories`;
   },
-  UPDATE_CODE(codeId: string) {
-    return BASE_URL + `/api/projects/v2/${codeId}/code`;
+  UPDATE_CODE(projectId: string, codeId: string) {
+    return BASE_URL + `/api/projects/${projectId}/${codeId}/code`;
   },
 };
 
@@ -74,8 +76,12 @@ export async function addRootCode(
   });
 }
 
-export async function addSubDirectory(name: string, directoryId: string) {
-  return axios.post(route.ADD_SUB_DIRECTORY(directoryId), {
+export async function addSubDirectory(
+  name: string,
+  projectId: string,
+  directoryId: string
+) {
+  return axios.post(route.ADD_SUB_DIRECTORY(projectId, directoryId), {
     name,
   });
 }
@@ -83,34 +89,44 @@ export async function addSubDirectory(name: string, directoryId: string) {
 export async function addCodeToSubDirectory(
   name: string,
   text: string,
+  projectId: string,
   directoryId: string
 ) {
-  return axios.post(route.ADD_CODE_TO_SUB_DIRECTORY(directoryId), {
+  return axios.post(route.ADD_CODE_TO_SUB_DIRECTORY(projectId, directoryId), {
     name,
     text,
   });
 }
 
-export async function deleteDirectory(directoryId: string) {
-  return axios.delete(route.DELETE_DIRECTORY(directoryId));
+export async function deleteDirectory(projectId: string, directoryId: string) {
+  return axios.delete(route.DELETE_DIRECTORY(projectId, directoryId));
 }
 
-export async function deleteCode(codeId: string) {
-  return axios.delete(route.DELETE_CODE(codeId));
+export async function deleteCode(projectId: string, codeId: string) {
+  return axios.delete(route.DELETE_CODE(projectId, codeId));
 }
 
 export async function deleteProject(projectId: string) {
   return axios.delete(route.DELETE_PROJECT(projectId));
 }
 
-export async function updateDirectory(name: string, directoryId: string) {
-  return axios.patch(route.UPDATE_DIRECTORY(directoryId), {
+export async function updateDirectory(
+  name: string,
+  projectId: string,
+  directoryId: string
+) {
+  return axios.patch(route.UPDATE_DIRECTORY(projectId, directoryId), {
     name,
   });
 }
 
-export async function updateCode(name: string, text: string, codeId: string) {
-  return axios.patch(route.UPDATE_CODE(codeId), {
+export async function updateCode(
+  name: string,
+  text: string,
+  projectId: string,
+  codeId: string
+) {
+  return axios.patch(route.UPDATE_CODE(projectId, codeId), {
     name,
     text,
   });
