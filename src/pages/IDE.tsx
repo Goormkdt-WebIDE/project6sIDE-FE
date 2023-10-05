@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Editor from "../components/ide/Editor";
 import IDEHeader from "../components/ide/IDEHeader";
+import _ from "lodash";
 import TreeView, {
   Code,
   Directory,
@@ -10,6 +11,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
+import { produce } from "immer";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -35,14 +37,12 @@ export default function IDE() {
 
   const onCreate = ({
     parentId,
-    index,
+
     type,
-    parentNode,
   }: {
     parentId: string | null;
-    index: number;
+
     type: string;
-    parentNode: NodeApi<Code | Directory> | null;
   }) => {
     if (!parentId && type === "internal") {
       addRootDirectory.mutate({
@@ -60,19 +60,25 @@ export default function IDE() {
     return null;
   };
 
-  const onDelete = ({
-    ids,
-    nodes,
-  }: {
-    ids: string[];
-    nodes: NodeApi<Code | Directory>[];
-  }) => {
+  const onDelete = ({ ids }: { ids: string[] }) => {
     deleteDirectory.mutate(ids[0]);
     deleteCode.mutate(ids[0]);
   };
 
-  const onMove = (result) => {
-    console.log(result);
+  const onMove = ({
+    dragIds,
+    dragNodes,
+    parentId,
+    parentNode,
+    index,
+  }: {
+    dragIds: string[];
+    dragNodes: NodeApi<Directory | Code>[];
+    parentId: string | null;
+    parentNode: NodeApi<Directory | Code> | null;
+    index: number;
+  }) => {
+    console.log(dragIds, dragNodes, parentId, parentNode, index);
   };
 
   const onRename = ({
@@ -84,7 +90,6 @@ export default function IDE() {
     name: string;
     node: NodeApi<Code | Directory>;
   }) => {
-    console.log(node.data);
     if (node.data.type === "directory") {
       updateDirectory.mutate({
         name,
@@ -99,9 +104,22 @@ export default function IDE() {
     });
   };
 
+  const onToggle = (id: string) => {
+    const newStates = produce(project, (draft) => {
+      if (draft && draft.children) {
+        const item = draft.children.find((c) => c.id === id) as Directory;
+        if (item) {
+          item.isClosed = !item.isClosed;
+        }
+      }
+    });
+    setProject(newStates);
+  };
+
   useEffect(() => {
     if (user && projectname && data) {
-      setProject(transformData(data.data));
+      const project = _.cloneDeep(data.data) as Code | Directory;
+      setProject(transformData(project));
     }
   }, [user, projectname, data]);
 
@@ -117,6 +135,7 @@ export default function IDE() {
             onDelete={onDelete}
             onMove={onMove}
             onRename={onRename}
+            onToggle={onToggle}
           />
           <Editor file={file} />
         </div>
@@ -132,6 +151,7 @@ function transformData(
   let children: TreeNode[] = [];
   if (isDirectory) {
     inputData.type = "directory";
+    (inputData as Directory).isClosed = true;
     const dirData = inputData as Directory;
     if (dirData.directories && dirData.directories.length > 0) {
       children = children.concat(

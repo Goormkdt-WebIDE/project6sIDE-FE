@@ -22,6 +22,7 @@ export type Directory = {
   codes?: Code[];
   type?: string;
   children?: TreeNode[];
+  isClosed?: boolean;
 };
 
 export type TreeNode = Directory | Code;
@@ -68,6 +69,7 @@ type Props = {
     name: string;
     node: NodeApi<Code | Directory>;
   }) => void;
+  onToggle: (id: string) => void;
 };
 
 export default function TreeView({
@@ -77,6 +79,7 @@ export default function TreeView({
   onDelete,
   onMove,
   onRename,
+  onToggle,
 }: Props) {
   console.log(data);
   return (
@@ -88,6 +91,7 @@ export default function TreeView({
         onDelete={onDelete}
         onMove={onMove}
         onRename={onRename}
+        onToggle={onToggle}
       >
         {(props) => <Node {...props} node={props.node} onClick={onClick} />}
       </Tree>
@@ -113,7 +117,7 @@ function Node({
       style={style}
       ref={dragHandle}
       onClick={() => {
-        node.isInternal && node.toggle();
+        node.data.type === "directory" && node.toggle();
         if (node.data.type === "file") {
           onClick(node.data as Code);
         }
@@ -145,9 +149,9 @@ function Node({
         ) : (
           <h3>{node.data.name}</h3>
         )}
-        {node.data.type !== "file" && node.isClosed ? (
+        {node.data.type !== "file" && (node.data as Directory).isClosed ? (
           <BiSolidRightArrow />
-        ) : node.data.type !== "file" && !node.isClosed ? (
+        ) : node.data.type !== "file" && !(node.data as Directory).isClosed ? (
           <BiSolidDownArrow />
         ) : (
           ""
