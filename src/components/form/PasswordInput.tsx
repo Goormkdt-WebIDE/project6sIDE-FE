@@ -1,46 +1,48 @@
 import React from "react";
-import { UseFormRegister, UseFormReturn } from "react-hook-form";
-import { FormValue } from "../service/http-requests/user-api";
+import {
+  FieldValues,
+  Path,
+  UseFormRegister,
+  UseFormReturn,
+} from "react-hook-form";
 
-export type RegisterType = "password" | "password_confirm" | undefined;
-
-type Props = {
-  register: UseFormRegister<FormValue>;
-  errors: UseFormReturn<FormValue>["formState"]["errors"];
+type Props<T extends FieldValues> = {
+  register: UseFormRegister<T>;
+  errors: UseFormReturn<T>["formState"]["errors"];
   placeholder?: string;
-  register_type?: RegisterType;
+  name: keyof T;
 };
 
-const PasswordInput = ({
+function PasswordInput<T extends FieldValues>({
   register,
   errors,
   placeholder,
-  register_type,
-}: Props) => {
+  name,
+}: Props<T>) {
   return (
     <>
       <input
         type="password"
         placeholder={placeholder ? placeholder : "Password"}
-        {...register(register_type ? register_type : "password", {
+        {...register(name as Path<T>, {
           required: true,
           minLength: 6,
         })}
         className="border-none rounded-md p-2 w-full mt-4"
       />
-      {errors.password && errors.password.type === "required" && (
+      {errors[name] && errors[name]?.type === "required" && (
         <p className="text-red-500" role="alert">
           <span className="inline-block align-middle">⚠ </span>
           This password field is required
         </p>
       )}
-      {errors.password && errors.password.type === "minLength" && (
+      {errors[name] && errors[name]?.type === "minLength" && (
         <p className="text-red-500" role="alert">
           Password must have at least 6 characters
         </p>
       )}
     </>
   );
-};
+}
 
 export default PasswordInput;

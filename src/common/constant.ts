@@ -1,1 +1,1 @@
-export const BASE_URL = "http://www.sside.shop";
+export const BASE_URL = "https://sside.shop";

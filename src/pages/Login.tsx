@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import EmailInput from "../components/EmailInput";
-import PasswordInput from "../components/PasswordInput";
+import EmailInput from "../components/form/EmailInput";
+import PasswordInput from "../components/form/PasswordInput";
 
-import SubmitButton from "../components/SubmitButton";
+import SubmitButton from "../components/form/SubmitButton";
 import { AxiosError } from "axios";
 import { FormValue } from "../service/http-requests/user-api";
 import { notifyError, notifySuccess } from "../service/toast";
@@ -20,14 +20,16 @@ function Login() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorFromSubmit, setErrorFromSubmit] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthContext();
+  const { login, onAuthStateChange } = useAuthContext();
 
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-      await login(data);
+      const res = await login(data);
+      document.cookie = `token=${res.data as string}; path=/`;
+      onAuthStateChange("login");
       notifySuccess("로그인에 성공했습니다.");
       navigate("/");
     } catch (error) {
@@ -40,13 +42,7 @@ function Login() {
   };
 
   return (
-    <div
-      className="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center"
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/background.jpeg')",
-      }}
-    >
+    <div className="relative min-h-screen bg-cover bg-center bg-opacity-25 flex items-center justify-center">
       <div className="text-center items-center w-full">
         <div className="flex flex-col items-center justify-center h-screen">
           <h1 className="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin">
@@ -59,8 +55,16 @@ function Login() {
             className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <EmailInput register={register} errors={errors} />
-            <PasswordInput register={register} errors={errors} />
+            <EmailInput<FormValue>
+              register={register}
+              errors={errors}
+              name="email"
+            />
+            <PasswordInput<FormValue>
+              register={register}
+              errors={errors}
+              name="password"
+            />
 
             <SubmitButton text="Sign In" loading={loading} />
             <Link
