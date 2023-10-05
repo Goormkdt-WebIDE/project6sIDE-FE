@@ -121,7 +121,7 @@ export default function IDE() {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onToggle = (id: string) => {};
+  const onToggle = (_: string) => {};
 
   useEffect(() => {
     if (user && projectname && data) {
