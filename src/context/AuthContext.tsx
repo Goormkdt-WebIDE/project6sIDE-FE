@@ -52,6 +52,9 @@ export function AuthContextProvider({ children }: Props) {
     if (type === "login") {
       const token = getToken("token");
       const decodedUser = token && decodeToken(token);
+      if (token) {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      }
       setUser(decodedUser);
       return;
     }
