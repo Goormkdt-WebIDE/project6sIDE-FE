@@ -1,179 +1,147 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { Client, IMessage } from "@stomp/stompjs";
 
-const colors = [
-  "#2196F3",
-  "#32c787",
-  "#00BCD4",
-  "#ff5652",
-  "#ffc107",
-  "#ff85af",
-  "#FF9800",
-  "#39bbb0",
-];
+type ChatMessage = {
+  sender: string;
+  content: string;
+  type: string;
+};
+
+function getRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 
 function Chatting() {
-  const [username, setUsername] = useState<string>("");
+  const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-
-  const messageAreaRef = useRef<HTMLDivElement | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [stompClient, setStompClient] = useState<any>(null);
+  const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    let connectingElement: HTMLDivElement | null = null;
-    let client: Client | null = null;
-
-    const connectCallback = () => {
-      client?.subscribe("/topic/public", onMessageReceived);
-      sendSystemMessage("joined");
-    };
-
-    const errorCallback = (error: string) => {
-      console.error("WebSocket error:", error);
-      connectingElement?.textContent =
-        "Could not connect to WebSocket server. Please refresh this page to try again!";
-      connectingElement?.style.color = "red";
-    };
-
-    const initializeWebSocket = () => {
-      const socket = new SockJS("https://sside.shop/ws");
-      client = new Client();
-      client.webSocketFactory = () => socket;
-      client.onConnect = connectCallback;
-      client.onStompError = errorCallback;
-
-      client.activate();
-      setStompClient(client);
-    };
-
-    initializeWebSocket();
-
+    const socket = new SockJS("https://sside.shop/ws");
+    const client = Stomp.over(socket);
+    client.connect({}, () => {
+      client.subscribe("/topic/public", (message) => {
+        const receivedMessage = JSON.parse(message.body);
+        setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+      });
+    });
+    setStompClient(client);
     return () => {
-      client?.deactivate();
-      sendSystemMessage("left");
+      client.disconnect();
     };
   }, []);
 
-  const onMessageReceived = (message: IMessage) => {
-    if (message && message.headers && message.headers["content-type"]) {
-      setMessages((prevMessages) => [...prevMessages, message]);
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  };
 
-      if (messageAreaRef.current) {
-        messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
-      }
+  const handleUserNameChange = (e) => {
+    const newUsername = e.target.value;
+    setUsername(newUsername);
+
+    if (!userColors[newUsername]) {
+      const newColor = getRandomColor();
+      setUserColors((prevColors) => ({
+        ...prevColors,
+        [newUsername]: newColor,
+      }));
     }
   };
 
-  const sendSystemMessage = (type: string) => {
-    if (stompClient) {
-      const systemMessage = {
-        sender: "System",
-        content: `${username} ${type} the chat.`,
-        type: "SYSTEM",
-        date: Date.now(),
-      };
-      stompClient.publish({
-        destination: "/chat/sendMessage",
-        body: JSON.stringify(systemMessage),
-      });
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && username.trim() && message.trim()) {
+      handleSendClick();
     }
   };
 
-  const handleConnect = (event: React.FormEvent) => {
-    event.preventDefault();
-    sendSystemMessage("joined");
-  };
-
-  const handleDisconnect = () => {
-    setUsername("");
-    sendSystemMessage("left");
-  };
-
-  const handleSendMessage = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (stompClient && message.trim() !== "") {
-      const chatMessage = {
-        sender: username,
-        content: message,
-        type: "CHAT",
-        date: Date.now(),
-      };
-      stompClient.publish({
-        destination: "/chat/sendMessage",
-        body: JSON.stringify(chatMessage),
-      });
-
+  const handleSendClick = () => {
+    if (username.trim() && message.trim()) {
+      const chatMessage = { sender: username, content: message, type: "CHAT" };
+      stompClient.send("/chat/sendMessage", {}, JSON.stringify(chatMessage));
       setMessage("");
-      setMessages((prevMessages) => [...prevMessages, chatMessage]);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="p-4">
-        <h1 className="text-2xl font-semibold">Chat Room</h1>
+    <div
+      className="container mx-auto h-screen flex flex-col bg-cover bg-center bg-opacity-25"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/background.jpeg')",
+      }}
+    >
+      <div className="p-4 border-b border-gray-300">
+        <input
+          type="text"
+          className="w-full border border-gray-300 rounded p-2"
+          placeholder="Search Messages"
+        />
       </div>
-      <div className="bg-white p-4" ref={messageAreaRef}>
-        <ul>
-          {messages.map((msg, index) => (
-            <li key={index}>
-              {msg?.headers?.["content-type"] === "SYSTEM" ? (
-                <div className="event-message">{msg.body}</div>
-              ) : (
-                <div className="chat-message">
-                  <i
-                    className="w-6 h-6 mr-2"
-                    style={{
-                      backgroundColor: getAvatarColor(msg?.body?.sender || ""),
-                    }}
-                  >
-                    {msg?.body?.sender ? msg.body.sender[0] : ""}
-                  </i>
-                  <span>{msg?.body?.sender}</span>
-                  <p>{msg?.body?.content}</p>
+      <>
+        <div className="flex-grow overflow-y-auto list-none bg-white shadow-lg rounded-lg border-2 border-gray-300 p-4 m-4">
+          <ul classNamd="p-4">
+            {messages.map((message, index) => (
+              <li
+                className="flex items-center border-gray-300 py-2"
+                key={index}
+              >
+                <div
+                  className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2"
+                  style={{
+                    backgroundColor: userColors[message.sender]
+                      ? userColors[message.sender]
+                      : getRandomColor(),
+                  }}
+                >
+                  {message.sender ? message.sender.charAt(0) : ""}
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="fixed inset-x-0 bottom-0 pb-4">
-        <form onSubmit={handleSendMessage}>
+                <div>
+                  <p className="text-xs font-semibold">{message.sender}</p>
+                  <p className="text-gray-700">{message.content}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+      <div className="p-4 border-none border-gray-300">
+        <div className="flex items-center">
           <input
+            id="username"
             type="text"
-            id="message"
-            className="w-full px-4 py-2 border-t border-gray-300 rounded-lg"
-            placeholder="Type your message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            className="w-1/5 border border-gray-300 rounded p-2 mr-2"
+            placeholder="Name"
+            value={username}
+            onChange={handleUserNameChange}
           />
-        </form>
-      </div>
-      <div
-        className="connecting absolute bottom-0 right-0 bg-white text-red-500 p-2"
-        ref={(el) => (connectingElement = el)}
-      >
-        Connecting...
+          <input
+            id="message"
+            type="text"
+            className="w-4/5 border border-gray-300 rounded p-2 mr-2"
+            placeholder="Write a message"
+            value={message}
+            onChange={handleMessageChange}
+            onKeyPress={handleKeyPress}
+          />
+          <button
+            className="bg-blue-400 text-white font-thin letter-spacing-2 py-2 px-4 rounded disabled:opacity-50 letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80 cursor-pointer"
+            onClick={handleSendClick}
+            disabled={!username.trim() || !message.trim()}
+          >
+            SEND
+          </button>
+        </div>
       </div>
     </div>
   );
-}
-
-function getAvatarColor(messageSender: string) {
-  if (!messageSender) {
-    return colors[0];
-  }
-
-  let hash = 0;
-  for (let i = 0; i < messageSender.length; i++) {
-    hash = 31 * hash + messageSender.charCodeAt(i);
-  }
-
-  const index = Math.abs(hash % colors.length);
-  return colors[index];
 }
 
 export default Chatting;
