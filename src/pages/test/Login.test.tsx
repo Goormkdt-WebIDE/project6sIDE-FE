@@ -6,7 +6,7 @@ import Login from "../Login";
 import { ToastContainer } from "react-toastify";
 import { Route } from "react-router-dom";
 
-const workSpacePageParagraph = "작업 페이지 입니다.";
+const mainPageParagraph = "메인 페이지 입니다.";
 const testEmail = "test@gmail.com";
 const testPassword = "password";
 
@@ -24,7 +24,7 @@ describe("Login", () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it("로그인 성공 시, 작업 페이지로 이동해야한다.", async () => {
+  it("로그인 성공 시, 메인 페이지로 이동해야한다.", async () => {
     fakeAuthObj.login.mockImplementation(() =>
       Promise.resolve({ data: "로그인성공" })
     );
@@ -36,7 +36,7 @@ describe("Login", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(await screen.findByText(workSpacePageParagraph)).toBeInTheDocument();
+    expect(await screen.findByText(mainPageParagraph)).toBeInTheDocument();
   });
 
   it("로그인 실패 시, 로그인이 실패했다는 문구가 떠야한다", async () => {
@@ -71,10 +71,7 @@ describe("Login", () => {
                 </>
               }
             />
-            <Route
-              path="/workspace"
-              element={<p>{workSpacePageParagraph}</p>}
-            ></Route>
+            <Route path="/" element={<p>{mainPageParagraph}</p>}></Route>
           </>,
           "/login"
         ),
