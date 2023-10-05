@@ -1,5 +1,6 @@
 import React from "react";
 import NewProject from "../components/project/NewProject";
+import MyProjects from "../components/project/MyProjects";
 
 function Main() {
   return (
@@ -15,7 +16,10 @@ function Main() {
           <h1 className="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin">
             6S IDE
           </h1>
-          <NewProject />
+          <div className="flex items-center justify-center w-full">
+            <NewProject />
+            <MyProjects />
+          </div>
         </div>
       </div>
     </div>

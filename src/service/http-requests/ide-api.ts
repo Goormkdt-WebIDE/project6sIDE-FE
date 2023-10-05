@@ -9,6 +9,7 @@ export type FormValue = {
 const route = {
   CREATE_NEW_PROJECT: BASE_URL + "/api/projects/save",
   GET_PROJECT: BASE_URL + "/api/projects",
+  GET_ALL_PROJECTS: BASE_URL + "/api/projects/user",
   ADD_ROOT_DIRECTORY(projectId: string) {
     return BASE_URL + `/api/projects/v2/${projectId}/directories`;
   },
@@ -44,6 +45,10 @@ export async function getProject(data: FormValue) {
     email: data.email,
     projectName: data.name,
   });
+}
+
+export async function getAllProjects() {
+  return axios.get(route.GET_ALL_PROJECTS);
 }
 
 export async function addRootDirectory(name: string, projectId: string) {

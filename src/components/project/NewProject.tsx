@@ -46,7 +46,7 @@ export default function NewProject() {
 
   return (
     <form
-      className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90"
+      className="max-w-md w-full p-8 rounded-lg shadow-lg bg-opacity-90 mr-5"
       onSubmit={handleSubmit(onSubmit)}
     >
       <NameInput<FormValue>
