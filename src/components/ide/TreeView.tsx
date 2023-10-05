@@ -7,6 +7,8 @@ import { BsFillFileEarmarkCodeFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 
+const treeClassname = "tree";
+
 export type Code = {
   id: string;
   name: string;
@@ -29,7 +31,8 @@ export type TreeNode = Directory | Code;
 
 type Props = {
   data: Directory;
-  onClick: (file: Code | null) => void;
+  onClickFile: (file: Code | null) => void;
+  onClickDirectory: (id: string | null) => void;
   onCreate: ({
     parentId,
     index,
@@ -74,7 +77,8 @@ type Props = {
 
 export default function TreeView({
   data,
-  onClick,
+  onClickFile,
+  onClickDirectory,
   onCreate,
   onDelete,
   onMove,
@@ -92,15 +96,29 @@ export default function TreeView({
         onMove={onMove}
         onRename={onRename}
         onToggle={onToggle}
+        className={treeClassname}
+        onClick={(e) => {
+          if ((e.target as HTMLElement).classList.contains(treeClassname)) {
+            onClickDirectory(null);
+          }
+        }}
       >
-        {(props) => <Node {...props} node={props.node} onClick={onClick} />}
+        {(props) => (
+          <Node
+            {...props}
+            node={props.node}
+            onClickFile={onClickFile}
+            onClickDirectory={onClickDirectory}
+          />
+        )}
       </Tree>
     </div>
   );
 }
 
 type AdditionalNodeProps = {
-  onClick: (file: Code | null) => void;
+  onClickFile: (file: Code | null) => void;
+  onClickDirectory: (id: string | null) => void;
 };
 
 function Node({
@@ -108,7 +126,8 @@ function Node({
   tree,
   style,
   dragHandle,
-  onClick,
+  onClickFile,
+  onClickDirectory,
 }: NodeRendererProps<Code | Directory> & AdditionalNodeProps) {
   /* This node instance can do many things. See the API reference. */
   return (
@@ -119,7 +138,11 @@ function Node({
       onClick={() => {
         node.data.type === "directory" && node.toggle();
         if (node.data.type === "file") {
-          onClick(node.data as Code);
+          onClickFile(node.data as Code);
+          onClickDirectory(null);
+        }
+        if (node.data.type === "directory") {
+          onClickDirectory(node.data.id);
         }
       }}
       className={`cursor-pointer hover:bg-slate-200 ${
@@ -149,9 +172,9 @@ function Node({
         ) : (
           <h3>{node.data.name}</h3>
         )}
-        {node.data.type !== "file" && (node.data as Directory).isClosed ? (
+        {node.data.type !== "file" && node.isClosed ? (
           <BiSolidRightArrow />
-        ) : node.data.type !== "file" && !(node.data as Directory).isClosed ? (
+        ) : node.data.type !== "file" && !node.isClosed ? (
           <BiSolidDownArrow />
         ) : (
           ""

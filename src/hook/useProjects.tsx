@@ -10,6 +10,8 @@ import {
   deleteCode as deleteCodeAPI,
   updateDirectory as updateDirectoryAPI,
   updateCode as updateCodeAPI,
+  addSubDirectory as addSubDirectoryAPI,
+  addCodeToSubDirectory as addCodeToSubDirectoryAPI,
 } from "../service/http-requests/ide-api";
 
 const baseQuery = "project";
@@ -19,7 +21,7 @@ export default function useProjects(projectName: string) {
   const { user } = useAuthContext();
 
   const projectQuery = useQuery(
-    [baseQuery, user?.email || "", projectName],
+    [baseQuery, user?.email, projectName],
     () =>
       getProject({
         name: projectName,
@@ -51,6 +53,33 @@ export default function useProjects(projectName: string) {
       text: string;
       projectId: string;
     }) => addRootCodeAPI(name, text, projectId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+      },
+    }
+  );
+
+  const addSubDirectory = useMutation(
+    ({ name, directoryId }: { name: string; directoryId: string }) =>
+      addSubDirectoryAPI(name, directoryId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
+      },
+    }
+  );
+
+  const addCodeToSubDirectory = useMutation(
+    ({
+      name,
+      text,
+      directoryId,
+    }: {
+      name: string;
+      text: string;
+      directoryId: string;
+    }) => addCodeToSubDirectoryAPI(name, text, directoryId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([baseQuery, user?.email, projectName]);
@@ -97,6 +126,8 @@ export default function useProjects(projectName: string) {
     projectQuery,
     addRootDirectory,
     addRootCode,
+    addSubDirectory,
+    addCodeToSubDirectory,
     deleteDirectory,
     deleteCode,
     updateDirectory,

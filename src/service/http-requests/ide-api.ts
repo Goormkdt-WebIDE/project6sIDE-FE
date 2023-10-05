@@ -16,6 +16,12 @@ const route = {
   ADD_ROOT_CODE(projectId: string) {
     return BASE_URL + `/api/projects/v2/${projectId}/code`;
   },
+  ADD_SUB_DIRECTORY(directoryId: string) {
+    return BASE_URL + `/api/projects/v2/directories/${directoryId}`;
+  },
+  ADD_CODE_TO_SUB_DIRECTORY(directoryId: string) {
+    return BASE_URL + `/api/projects/v2/directories/${directoryId}/code`;
+  },
   DELETE_DIRECTORY(directoryId: string) {
     return BASE_URL + `/api/projects/v2/directories/${directoryId}`;
   },
@@ -63,6 +69,23 @@ export async function addRootCode(
   projectId: string
 ) {
   return axios.post(route.ADD_ROOT_CODE(projectId), {
+    name,
+    text,
+  });
+}
+
+export async function addSubDirectory(name: string, directoryId: string) {
+  return axios.post(route.ADD_SUB_DIRECTORY(directoryId), {
+    name,
+  });
+}
+
+export async function addCodeToSubDirectory(
+  name: string,
+  text: string,
+  directoryId: string
+) {
+  return axios.post(route.ADD_CODE_TO_SUB_DIRECTORY(directoryId), {
     name,
     text,
   });

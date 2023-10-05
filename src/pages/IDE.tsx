@@ -11,11 +11,11 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
-import { produce } from "immer";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
   const [file, setFile] = useState<Code | null>(null);
+  const [directory, setDirectory] = useState<string | null>(null);
 
   const { user } = useAuthContext();
 
@@ -24,6 +24,8 @@ export default function IDE() {
   const {
     addRootCode,
     addRootDirectory,
+    addSubDirectory,
+    addCodeToSubDirectory,
     deleteDirectory,
     deleteCode,
     updateDirectory,
@@ -31,26 +33,38 @@ export default function IDE() {
     projectQuery: { data },
   } = useProjects(projectname as string);
 
-  const onClick = (file: Code | null) => {
+  const onClickFile = (file: Code | null) => {
     setFile(file);
   };
 
-  const onCreate = ({
-    parentId,
+  const onClickDirectory = (id: string | null) => {
+    setDirectory(id);
+  };
 
-    type,
-  }: {
-    parentId: string | null;
+  const onCreate = ({ type }: { type: string }) => {
+    if (directory && type === "internal") {
+      addSubDirectory.mutate({
+        name: "",
+        directoryId: directory,
+      });
+    }
 
-    type: string;
-  }) => {
-    if (!parentId && type === "internal") {
+    if (directory && type === "leaf") {
+      addCodeToSubDirectory.mutate({
+        name: "",
+        text: "",
+        directoryId: directory,
+      });
+    }
+
+    if (!directory && type === "internal") {
       addRootDirectory.mutate({
         name: "",
         projectId: project?.id as string,
       });
     }
-    if (!parentId && type === "leaf") {
+
+    if (!directory && type === "leaf") {
       addRootCode.mutate({
         text: "",
         name: "",
@@ -61,8 +75,10 @@ export default function IDE() {
   };
 
   const onDelete = ({ ids }: { ids: string[] }) => {
-    deleteDirectory.mutate(ids[0]);
-    deleteCode.mutate(ids[0]);
+    ids.forEach((id) => {
+      deleteDirectory.mutate(id);
+      deleteCode.mutate(id);
+    });
   };
 
   const onMove = ({
@@ -104,17 +120,8 @@ export default function IDE() {
     });
   };
 
-  const onToggle = (id: string) => {
-    const newStates = produce(project, (draft) => {
-      if (draft && draft.children) {
-        const item = draft.children.find((c) => c.id === id) as Directory;
-        if (item) {
-          item.isClosed = !item.isClosed;
-        }
-      }
-    });
-    setProject(newStates);
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onToggle = (id: string) => {};
 
   useEffect(() => {
     if (user && projectname && data) {
@@ -130,7 +137,8 @@ export default function IDE() {
         <div className="flex w-full h-full px-3 pb-10">
           <TreeView
             data={project}
-            onClick={onClick}
+            onClickFile={onClickFile}
+            onClickDirectory={onClickDirectory}
             onCreate={onCreate}
             onDelete={onDelete}
             onMove={onMove}
@@ -151,14 +159,21 @@ function transformData(
   let children: TreeNode[] = [];
   if (isDirectory) {
     inputData.type = "directory";
-    (inputData as Directory).isClosed = true;
     const dirData = inputData as Directory;
-    if (dirData.directories && dirData.directories.length > 0) {
+    if (
+      dirData.directories &&
+      dirData.directories.length > 0 &&
+      dirData.directories.filter((c) => c !== null).length > 0
+    ) {
       children = children.concat(
         dirData.directories.map((dir) => transformData(dir, true))
       );
     }
-    if (dirData.codes && dirData.codes.length > 0) {
+    if (
+      dirData.codes &&
+      dirData.codes.length > 0 &&
+      dirData.codes.filter((c) => c !== null).length > 0
+    ) {
       children = children.concat(
         dirData.codes.map((code) => transformData(code, false))
       );
