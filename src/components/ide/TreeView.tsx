@@ -13,6 +13,7 @@ export type Code = {
   id: string;
   name: string;
   text: string;
+  extension: string;
   type?: string;
   children?: TreeNode[];
 };

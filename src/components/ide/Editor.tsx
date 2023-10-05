@@ -1,10 +1,12 @@
 import React from "react";
 import AceEditor from "react-ace";
 
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-github";
+import { config } from "ace-builds";
+import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { Code } from "./TreeView";
+
+config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
 
 type Props = {
   file: Code | null;
@@ -13,9 +15,9 @@ type Props = {
 export default function Editor({ file }: Props) {
   return (
     <AceEditor
-      mode="java"
-      theme="github"
-      onChange={() => console.log("hello")}
+      mode={file && file.extension ? file.extension : "java"}
+      theme="monokai"
+      onChange={() => {}}
       name="UNIQUE_ID_OF_DIV"
       editorProps={{ $blockScrolling: true }}
       value={file?.text}
