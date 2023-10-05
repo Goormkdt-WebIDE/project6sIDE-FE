@@ -4,13 +4,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import NameInput from "../form/NameInput";
 import { useAuthContext } from "../../context/AuthContext";
-
-import {
-  FormValue,
-  createNewProject,
-} from "../../service/http-requests/ide-api";
+import { FormValue } from "../../service/http-requests/ide-api";
 import { AxiosError } from "axios";
 import { notifyError, notifySuccess } from "../../service/toast";
+import useAllProjects from "../../hook/useAllProjects";
 
 export default function NewProject() {
   const {
@@ -24,12 +21,14 @@ export default function NewProject() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { createNewProject } = useAllProjects();
+
   const { user } = useAuthContext();
 
   const onSubmit = async (data: FormValue) => {
     try {
       setLoading(true);
-      await createNewProject(data);
+      createNewProject.mutate(data);
       notifySuccess("새 프로젝트 생성에 성공했습니다.");
       navigate(`/workspace/${data.name}`);
     } catch (error) {

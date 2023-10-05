@@ -1,13 +1,19 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useAuthContext } from "../context/AuthContext";
-import { getAllProjects } from "../service/http-requests/ide-api";
+import {
+  getAllProjects,
+  createNewProject as createNewProjectAPI,
+  FormValue,
+} from "../service/http-requests/ide-api";
 
 const baseQuery = "projects";
 
 export default function useAllProjects() {
+  const queryClient = useQueryClient();
   const { user } = useAuthContext();
+
   const allProjectQuery = useQuery(
     [baseQuery, user?.email],
     () => getAllProjects(),
@@ -17,5 +23,14 @@ export default function useAllProjects() {
     }
   );
 
-  return { allProjectQuery };
+  const createNewProject = useMutation(
+    (data: FormValue) => createNewProjectAPI(data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email]);
+      },
+    }
+  );
+
+  return { allProjectQuery, createNewProject };
 }
