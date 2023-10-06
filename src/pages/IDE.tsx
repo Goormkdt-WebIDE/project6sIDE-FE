@@ -148,6 +148,38 @@ export default function IDE() {
     }
   };
 
+  const onAddFileMenuClick = () => {
+    if (directory) {
+      addCodeToSubDirectory.mutate({
+        name: "",
+        text: "",
+        projectId: project?.id as string,
+        directoryId: directory,
+      });
+    } else {
+      addRootCode.mutate({
+        text: "",
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+  };
+
+  const onAddDirectoryMenuClick = () => {
+    if (directory) {
+      addSubDirectory.mutate({
+        name: "",
+        projectId: project?.id as string,
+        directoryId: directory,
+      });
+    } else {
+      addRootDirectory.mutate({
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+  };
+
   useEffect(() => {
     if (user && projectname && data) {
       const project = _.cloneDeep(data.data) as Code | Directory;
@@ -157,7 +189,11 @@ export default function IDE() {
 
   return (
     <>
-      <IDEHeader onSaveMenuClick={onSaveMenuClick} />
+      <IDEHeader
+        onSaveMenuClick={onSaveMenuClick}
+        onAddFileMenuClick={onAddFileMenuClick}
+        onAddDirectoryMenuClick={onAddDirectoryMenuClick}
+      />
       {project && (
         <div className="flex w-full h-full px-3 pb-10">
           <TreeView

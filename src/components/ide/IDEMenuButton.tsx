@@ -10,7 +10,7 @@ type Props = {
   placeholder: string;
   className?: string;
   options?: Option[];
-  onClick: () => void;
+  onClick?: (value?: { value: string; label: string }) => void;
 };
 
 const customStyles = {
@@ -49,7 +49,7 @@ export default function IDEMenuButton({
       onChange={(value) => {
         setSelectedOption(value);
         if (onClick) {
-          onClick();
+          value ? onClick(value) : onClick();
         }
       }}
       options={options}
