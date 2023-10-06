@@ -1,4 +1,4 @@
-# Web IDE Frondend
+# Web IDE Frontend
 
 ## 구성원
 
