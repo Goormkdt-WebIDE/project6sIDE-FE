@@ -2,12 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-type ChatMessage = {
-  sender: string;
-  content: string;
-  type: string;
-};
-
 function getRandomColor() {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -18,17 +12,19 @@ function getRandomColor() {
 }
 
 function Chatting() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [message, setMessage] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [stompClient, setStompClient] = useState<any>(null);
-  const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [stompClient, setStompClient] = useState(null);
+  const [userColors, setUserColors] = useState({});
+  const [searchValue, setSearchValue] = useState("");
   const messageRefs = useRef([]);
   const messageListRef = useRef(null);
   const [scrollToIndex, setScrollToIndex] = useState(-1);
+  const [nextMatchIndex, setNextMatchIndex] = useState(-1);
   const scrollToRef = useRef(null);
 
+  // WebSocket 연결 설정과 해제
   useEffect(() => {
     const socket = new SockJS("https://sside.shop/ws");
     const client = Stomp.over(socket);
@@ -40,15 +36,12 @@ function Chatting() {
     });
     setStompClient(client);
 
-    if (messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-
     return () => {
       client.disconnect();
     };
-  }, [messages]);
+  }, []);
 
+  // 메시지 입력 관련 이벤트 핸들러
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
@@ -73,32 +66,40 @@ function Chatting() {
   };
 
   const handleSendClick = () => {
-    if (username.trim() && message.trim()) {
+    if (username.trim() && message.trim() && stompClient) {
       const chatMessage = { sender: username, content: message, type: "CHAT" };
       stompClient.send("/chat/sendMessage", {}, JSON.stringify(chatMessage));
       setMessage("");
     }
   };
 
+  // 메시지 검색과 스크롤 관련 이벤트 핸들러
   const messageSearch = () => {
     const searchValueLower = searchValue.toLowerCase();
-    const index = messages.findIndex((message) =>
-      message.content.toLowerCase().includes(searchValueLower)
+    const startIndex = nextMatchIndex !== -1 ? nextMatchIndex + 1 : 0;
+    const index = messages.findIndex(
+      (message, i) =>
+        i >= startIndex &&
+        message.content.toLowerCase().includes(searchValueLower)
     );
 
     if (index !== -1) {
       if (messageRefs.current[index]) {
         messageRefs.current[index].scrollIntoView();
-        // console.log("검색어 인덱스 위치:", index);
+        setNextMatchIndex(index);
       }
+    } else {
+      // 일치하는 메시지를 더 이상 찾지 못한 경우, 첫 번째 메시지로 돌아감
+      setNextMatchIndex(-1);
     }
   };
 
+  // 새로운 메시지가 추가될 때 스크롤을 아래로 이동
   useEffect(() => {
-    if (scrollToRef.current) {
-      scrollToRef.current.scrollIntoView({ behavior: "smooth" });
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [scrollToIndex]);
+  }, [messages]);
 
   return (
     <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
