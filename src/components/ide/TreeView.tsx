@@ -52,18 +52,6 @@ type Props = {
     ids: string[];
     nodes: NodeApi<Code | Directory>[];
   }) => void;
-  onMove: ({
-    dragIds,
-    parentId,
-    parentNode,
-    index,
-  }: {
-    dragIds: string[];
-    dragNodes: NodeApi<Directory | Code>[];
-    parentId: string | null;
-    parentNode: NodeApi<Directory | Code> | null;
-    index: number;
-  }) => void;
   onRename: ({
     id,
     name,
@@ -73,7 +61,6 @@ type Props = {
     name: string;
     node: NodeApi<Code | Directory>;
   }) => void;
-  onToggle: (id: string) => void;
 };
 
 export default function TreeView({
@@ -82,9 +69,8 @@ export default function TreeView({
   onClickDirectory,
   onCreate,
   onDelete,
-  onMove,
+
   onRename,
-  onToggle,
 }: Props) {
   console.log(data);
   return (
@@ -94,9 +80,7 @@ export default function TreeView({
         data={data.children}
         onCreate={onCreate}
         onDelete={onDelete}
-        onMove={onMove}
         onRename={onRename}
-        onToggle={onToggle}
         className={treeClassname}
         onClick={(e) => {
           if ((e.target as HTMLElement).classList.contains(treeClassname)) {

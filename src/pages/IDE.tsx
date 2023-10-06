@@ -90,22 +90,6 @@ export default function IDE() {
     });
   };
 
-  const onMove = ({
-    dragIds,
-    dragNodes,
-    parentId,
-    parentNode,
-    index,
-  }: {
-    dragIds: string[];
-    dragNodes: NodeApi<Directory | Code>[];
-    parentId: string | null;
-    parentNode: NodeApi<Directory | Code> | null;
-    index: number;
-  }) => {
-    console.log(dragIds, dragNodes, parentId, parentNode, index);
-  };
-
   const onRename = ({
     id,
     name,
@@ -131,12 +115,9 @@ export default function IDE() {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onToggle = (_: string) => {};
-
   const editorRef = useRef<ReactAce | null>(null);
 
-  const onSaveMenuClick = () => {
+  const onSave = () => {
     if (editorRef.current && file) {
       const text = editorRef.current.editor.getValue();
       updateCode.mutate({
@@ -146,6 +127,10 @@ export default function IDE() {
         codeId: file.id,
       });
     }
+  };
+
+  const onSaveMenuClick = () => {
+    onSave();
   };
 
   const onAddFileMenuClick = () => {
@@ -202,11 +187,9 @@ export default function IDE() {
             onClickDirectory={onClickDirectory}
             onCreate={onCreate}
             onDelete={onDelete}
-            onMove={onMove}
             onRename={onRename}
-            onToggle={onToggle}
           />
-          <Editor file={file} editorRef={editorRef} />
+          <Editor file={file} editorRef={editorRef} onSave={onSave} />
         </div>
       )}
     </>
