@@ -35,7 +35,7 @@ export default function TreeView({
   onRename,
 }: Props) {
   return (
-    <div className="flex flex-col">
+    <div className="basis-1/5 flex flex-col">
       <h2>{data.name}</h2>
       <Tree
         data={data.children}

@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  ChangeEvent,
-  KeyboardEvent,
-} from "react";
+import React, { useEffect, useState, useRef, KeyboardEvent } from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SearchInput from "./SearchInput";
@@ -21,6 +15,7 @@ function Chatting(): JSX.Element {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [stompClient, setStompClient] = useState<any>(null);
   const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
   const [searchValue, setSearchValue] = useState<string>("");
@@ -28,7 +23,6 @@ function Chatting(): JSX.Element {
   const messageListRef = useRef<HTMLDivElement | null>(null);
   const [scrollToIndex, setScrollToIndex] = useState<number>(-1);
   const [nextMatchIndex, setNextMatchIndex] = useState<number>(-1);
-  const scrollToRef = useRef<HTMLLIElement | null>(null);
 
   // WebSocket 연결 설정과 해제
   useEffect(() => {
@@ -46,20 +40,6 @@ function Chatting(): JSX.Element {
       client.disconnect();
     };
   }, []);
-
-  // 메시지 입력 관련 이벤트 핸들러
-  const handleMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const newUsername: string = e.target.value;
-    setUsername(newUsername);
-
-    if (!userColors[newUsername]) {
-      const newColor: string = getRandomColor();
-      setUserColors((prevColors) => ({
-        ...prevColors,
-        [newUsername]: newColor,
-      }));
-    }
-  };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && username.trim() && message.trim()) {
@@ -112,7 +92,7 @@ function Chatting(): JSX.Element {
   };
 
   return (
-    <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
+    <div className="basis-[30%] container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
       <SearchInput
         searchValue={searchValue}
         setSearchValue={setSearchValue}
@@ -122,7 +102,7 @@ function Chatting(): JSX.Element {
         messages={messages}
         userColors={userColors}
         scrollToIndex={scrollToIndex}
-        messageRefs={messageRefs}
+        messageRefs={messageRefs.current}
         messageListRef={messageListRef}
       />
       <div className="p-4 border-none border-gray-300">
@@ -140,6 +120,7 @@ function Chatting(): JSX.Element {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getRandomColor(): string {
   const letters = "0123456789ABCDEF";
   let color = "#";

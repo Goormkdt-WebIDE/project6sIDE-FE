@@ -184,27 +184,19 @@ export default function IDE() {
         onAddFileMenuClick={onAddFileMenuClick}
         onAddDirectoryMenuClick={onAddDirectoryMenuClick}
       />
-      <div className="flex flex-col h-full">
-        <div className="flex w-full h-full px-3 pb-10">
-          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "1" }}>
-            {project && (
-              <TreeView
-                data={project}
-                onClickFile={onClickFile}
-                onClickDirectory={onClickDirectory}
-                onCreate={onCreate}
-                onDelete={onDelete}
-                onRename={onRename}
-              />
-            )}
-          </div>
-          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "3" }}>
-            <Editor file={file} editorRef={editorRef} onSave={onSave} />
-          </div>
-          <div style={{ flex: "2" }}>
-            <Chatting />
-          </div>
-        </div>
+      <div className="flex w-full h-full px-3 pb-10">
+        {project && (
+          <TreeView
+            data={project}
+            onClickFile={onClickFile}
+            onClickDirectory={onClickDirectory}
+            onCreate={onCreate}
+            onDelete={onDelete}
+            onRename={onRename}
+          />
+        )}
+        <Editor file={file} editorRef={editorRef} onSave={onSave} />
+        <Chatting />
       </div>
     </>
   );
