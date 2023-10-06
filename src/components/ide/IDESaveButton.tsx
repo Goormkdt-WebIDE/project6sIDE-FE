@@ -3,6 +3,16 @@ import IDEMenuButton from "./IDEMenuButton";
 
 const options = [{ value: "저장하기", label: "저장하기" }];
 
-export default function IDESaveButton() {
-  return <IDEMenuButton placeholder="저장" options={options} />;
+type Props = {
+  onSaveMenuClick: () => void;
+};
+
+export default function IDESaveButton({ onSaveMenuClick }: Props) {
+  return (
+    <IDEMenuButton
+      placeholder="저장"
+      options={options}
+      onClick={onSaveMenuClick}
+    />
+  );
 }

@@ -10,6 +10,7 @@ type Props = {
   placeholder: string;
   className?: string;
   options?: Option[];
+  onClick?: (value?: { value: string; label: string }) => void;
 };
 
 const customStyles = {
@@ -24,7 +25,7 @@ const customStyles = {
     width: 85,
     textAlign: "center",
     ":hover": {
-      backgroundColor: "rgb(226 232 240)", // Set hover background color here
+      backgroundColor: "rgb(226 232 240)",
     },
   }),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,19 +39,25 @@ export default function IDEMenuButton({
   placeholder,
   className,
   options,
+  onClick,
 }: Props) {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
 
   return (
     <Select
       defaultValue={selectedOption}
-      onChange={setSelectedOption}
+      onChange={(value) => {
+        setSelectedOption(value);
+        if (onClick) {
+          value ? onClick(value) : onClick();
+        }
+      }}
       options={options}
       styles={customStyles}
       isSearchable={false}
       placeholder={placeholder}
       components={{
-        DropdownIndicator: null, // This removes the dropdown arrow indicator
+        DropdownIndicator: null,
       }}
       className={className ? className : ""}
       value={null}
