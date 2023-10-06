@@ -11,6 +11,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
+import Chatting from "../components/Chatting";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -143,21 +144,30 @@ export default function IDE() {
   return (
     <>
       <IDEHeader />
-      {project && (
+      <div className="flex flex-col h-full">
         <div className="flex w-full h-full px-3 pb-10">
-          <TreeView
-            data={project}
-            onClickFile={onClickFile}
-            onClickDirectory={onClickDirectory}
-            onCreate={onCreate}
-            onDelete={onDelete}
-            onMove={onMove}
-            onRename={onRename}
-            onToggle={onToggle}
-          />
-          <Editor file={file} />
+          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "1" }}>
+            {project && (
+              <TreeView
+                data={project}
+                onClickFile={onClickFile}
+                onClickDirectory={onClickDirectory}
+                onCreate={onCreate}
+                onDelete={onDelete}
+                onMove={onMove}
+                onRename={onRename}
+                onToggle={onToggle}
+              />
+            )}
+          </div>
+          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "3" }}>
+            <Editor file={file} />
+          </div>
+          <div style={{ flex: "2" }}>
+            <Chatting />
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

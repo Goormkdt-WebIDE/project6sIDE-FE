@@ -20,7 +20,7 @@ export default function Editor({ file }: Props) {
       editorProps={{ $blockScrolling: true }}
       value={file?.text}
       style={{
-        flexBasis: "80%",
+        flexBasis: "100%",
         height: "100%",
       }}
     />
