@@ -2,16 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import Editor from "../components/ide/Editor";
 import IDEHeader from "../components/ide/IDEHeader";
 import _ from "lodash";
-import TreeView, {
-  Code,
-  Directory,
-  TreeNode,
-} from "../components/ide/TreeView";
+import TreeView from "../components/ide/TreeView";
 import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
 import ReactAce from "react-ace/lib/ace";
+import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();

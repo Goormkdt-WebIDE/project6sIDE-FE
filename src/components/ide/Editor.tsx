@@ -5,8 +5,8 @@ import * as ace from "ace-builds";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 import modelist from "ace-builds/src-noconflict/ext-modelist";
-import { Code } from "./TreeView";
 import ReactAce from "react-ace/lib/ace";
+import { Code } from "../types/TreeView.types";
 
 ace.config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
 
