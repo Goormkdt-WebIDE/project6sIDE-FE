@@ -11,7 +11,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
-import Chatting from "../components/Chatting";
+import Chatting from "../components/chatting/Chatting";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();

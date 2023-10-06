@@ -2,7 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-function getRandomColor() {
+type Message = {
+  sender: string;
+  content: string;
+  type: string;
+};
+
+function getRandomColor(): string {
   const letters = "0123456789ABCDEF";
   let color = "#";
   for (let i = 0; i < 6; i++) {
@@ -11,18 +17,18 @@ function getRandomColor() {
   return color;
 }
 
-function Chatting() {
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("");
-  const [stompClient, setStompClient] = useState(null);
-  const [userColors, setUserColors] = useState({});
-  const [searchValue, setSearchValue] = useState("");
-  const messageRefs = useRef([]);
-  const messageListRef = useRef(null);
-  const [scrollToIndex, setScrollToIndex] = useState(-1);
-  const [nextMatchIndex, setNextMatchIndex] = useState(-1);
-  const scrollToRef = useRef(null);
+function Chatting(): JSX.Element {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [stompClient, setStompClient] = useState<any>(null);
+  const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
+  const [searchValue, setSearchValue] = useState<string>("");
+  const messageRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const messageListRef = useRef<HTMLDivElement | null>(null);
+  const [scrollToIndex, setScrollToIndex] = useState<number>(-1);
+  const [nextMatchIndex, setNextMatchIndex] = useState<number>(-1);
+  const scrollToRef = useRef<HTMLLIElement | null>(null);
 
   // WebSocket 연결 설정과 해제
   useEffect(() => {
@@ -42,16 +48,20 @@ function Chatting() {
   }, []);
 
   // 메시지 입력 관련 이벤트 핸들러
-  const handleMessageChange = (e) => {
+  const handleMessageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setMessage(e.target.value);
   };
 
-  const handleUserNameChange = (e) => {
-    const newUsername = e.target.value;
+  const handleUserNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const newUsername: string = e.target.value;
     setUsername(newUsername);
 
     if (!userColors[newUsername]) {
-      const newColor = getRandomColor();
+      const newColor: string = getRandomColor();
       setUserColors((prevColors) => ({
         ...prevColors,
         [newUsername]: newColor,
@@ -59,25 +69,29 @@ function Chatting() {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && username.trim() && message.trim()) {
       handleSendClick();
     }
   };
 
-  const handleSendClick = () => {
+  const handleSendClick = (): void => {
     if (username.trim() && message.trim() && stompClient) {
-      const chatMessage = { sender: username, content: message, type: "CHAT" };
+      const chatMessage: Message = {
+        sender: username,
+        content: message,
+        type: "CHAT",
+      };
       stompClient.send("/chat/sendMessage", {}, JSON.stringify(chatMessage));
       setMessage("");
     }
   };
 
   // 메시지 검색과 스크롤 관련 이벤트 핸들러
-  const messageSearch = () => {
-    const searchValueLower = searchValue.toLowerCase();
-    const startIndex = nextMatchIndex !== -1 ? nextMatchIndex + 1 : 0;
-    const index = messages.findIndex(
+  const messageSearch = (): void => {
+    const searchValueLower: string = searchValue.toLowerCase();
+    const startIndex: number = nextMatchIndex !== -1 ? nextMatchIndex + 1 : 0;
+    const index: number = messages.findIndex(
       (message, i) =>
         i >= startIndex &&
         message.content.toLowerCase().includes(searchValueLower)
@@ -85,7 +99,7 @@ function Chatting() {
 
     if (index !== -1) {
       if (messageRefs.current[index]) {
-        messageRefs.current[index].scrollIntoView();
+        messageRefs.current[index]?.scrollIntoView();
         setNextMatchIndex(index);
       }
     } else {
