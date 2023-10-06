@@ -23,7 +23,8 @@ function MessagePresenter({
   useEffect(() => {
     // messages 배열이 업데이트될 때 스크롤 이동 로직을 실행하세요.
     if (messageListRef.current && scrollToIndex !== -1 && messageRefs) {
-      const targetElement = messageRefs[scrollToIndex].current;
+      const targetElement =
+        messageRefs[scrollToIndex] && messageRefs[scrollToIndex].current;
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: "smooth" });
       }
@@ -42,7 +43,7 @@ function MessagePresenter({
               className="flex items-center border-gray-300 py-2"
               key={index}
               ref={(el) => {
-                if (el && messageRefs) {
+                if (el && messageRefs && messageRefs[index]) {
                   messageRefs[index].current = el;
                 }
               }}
