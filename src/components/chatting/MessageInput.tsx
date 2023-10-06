@@ -1,14 +1,14 @@
-import React, { ChangeEvent, KeyboardEvent } from "react";
+import React from "react";
 import { getRandomColor } from "./Chatting";
 
 type MessageInputProps = {
   username: string;
   message: string;
-  setUsername: (value: string) => void;
-  setMessage: (value: string) => void;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
   handleSendClick: () => void;
-  handleKeyPress: (event: KeyboardEvent<HTMLInputElement>) => void;
-  userColors: string[];
+  handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  userColors: Record<string, string>;
 };
 
 function MessageInput({
@@ -18,8 +18,7 @@ function MessageInput({
   setMessage,
   handleSendClick,
   handleKeyPress,
-  userColors,
-}) {
+}: MessageInputProps) {
   return (
     <div className="p-4 border-none border-gray-300">
       <div className="flex items-center">

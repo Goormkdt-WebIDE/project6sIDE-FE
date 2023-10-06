@@ -6,7 +6,11 @@ type SearchInputProps = {
   messageSearch: () => void;
 };
 
-function SearchInput({ searchValue, setSearchValue, messageSearch }) {
+function SearchInput({
+  searchValue,
+  setSearchValue,
+  messageSearch,
+}: SearchInputProps) {
   return (
     <div className="p-4 border-b border-gray-300 flex items-center">
       <input

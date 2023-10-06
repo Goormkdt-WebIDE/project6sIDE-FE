@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+} from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SearchInput from "./SearchInput";
@@ -18,7 +24,7 @@ function Chatting(): JSX.Element {
   const [stompClient, setStompClient] = useState<any>(null);
   const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
   const [searchValue, setSearchValue] = useState<string>("");
-  const messageRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const messageRefs = useRef<Array<React.RefObject<HTMLLIElement | null>>>([]);
   const messageListRef = useRef<HTMLDivElement | null>(null);
   const [scrollToIndex, setScrollToIndex] = useState<number>(-1);
   const [nextMatchIndex, setNextMatchIndex] = useState<number>(-1);
@@ -42,9 +48,7 @@ function Chatting(): JSX.Element {
   }, []);
 
   // 메시지 입력 관련 이벤트 핸들러
-  const handleMessageChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const newUsername: string = e.target.value;
     setUsername(newUsername);
 
@@ -57,7 +61,7 @@ function Chatting(): JSX.Element {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && username.trim() && message.trim()) {
       handleSendClick();
     }
@@ -71,6 +75,17 @@ function Chatting(): JSX.Element {
         type: "CHAT",
       };
       stompClient.send("/chat/sendMessage", {}, JSON.stringify(chatMessage));
+      if (!Object.keys(userColors).includes(username as string)) {
+        const newUserColors = { [username]: getRandomColor() };
+        setUserColors({ ...userColors, ...newUserColors });
+        console.log(userColors);
+      }
+
+      if (messageListRef.current) {
+        messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+        setScrollToIndex(messages.length);
+      }
+
       setMessage("");
     }
   };
@@ -87,7 +102,7 @@ function Chatting(): JSX.Element {
 
     if (index !== -1) {
       if (messageRefs.current[index]) {
-        messageRefs.current[index]?.scrollIntoView();
+        messageRefs.current[index]?.current?.scrollIntoView(); // 수정된 부분
         setNextMatchIndex(index);
       }
     } else {
@@ -95,13 +110,6 @@ function Chatting(): JSX.Element {
       setNextMatchIndex(-1);
     }
   };
-
-  // 새로운 메시지가 추가될 때 스크롤을 아래로 이동
-  useEffect(() => {
-    if (messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   return (
     <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
@@ -115,6 +123,7 @@ function Chatting(): JSX.Element {
         userColors={userColors}
         scrollToIndex={scrollToIndex}
         messageRefs={messageRefs}
+        messageListRef={messageListRef}
       />
       <div className="p-4 border-none border-gray-300">
         <MessageInput

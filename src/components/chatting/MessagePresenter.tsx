@@ -1,5 +1,4 @@
-import React, { RefObject } from "react";
-import { getRandomColor } from "./Chatting";
+import React, { useEffect, useRef } from "react";
 
 type Message = {
   sender: string;
@@ -10,7 +9,7 @@ type MessagePresenterProps = {
   messages: Message[];
   userColors: Record<string, string>;
   scrollToIndex: number;
-  messageRefs: RefObject<HTMLLIElement>[];
+  messageRefs: RefObject<HTMLLIElement | null>[];
   messageListRef: RefObject<HTMLDivElement>;
 };
 
@@ -20,7 +19,17 @@ function MessagePresenter({
   scrollToIndex,
   messageRefs,
   messageListRef,
-}) {
+}: MessagePresenterProps) {
+  useEffect(() => {
+    // messages 배열이 업데이트될 때 스크롤 이동 로직을 실행하세요.
+    if (messageListRef.current && scrollToIndex !== -1) {
+      const targetElement = messageRefs.current[scrollToIndex];
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages, scrollToIndex]);
+
   return (
     <div
       className="flex-grow overflow-y-auto list-none bg-white shadow-lg rounded-lg border-2 border-gray-300 p-4 m-4"
@@ -34,16 +43,12 @@ function MessagePresenter({
               key={index}
               ref={(el) => {
                 messageRefs.current[index] = el;
-                if (index === scrollToIndex) {
-                  scrollToRef.current = el;
-                }
               }}
             >
               <div
                 className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2"
                 style={{
-                  backgroundColor:
-                    userColors[message.sender] || getRandomColor(),
+                  backgroundColor: userColors[message.sender],
                 }}
               >
                 {message.sender ? message.sender.charAt(0) : ""}
