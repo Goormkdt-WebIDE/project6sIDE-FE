@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AceEditor from "react-ace";
 
 import * as ace from "ace-builds";
@@ -13,13 +13,16 @@ ace.config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
 type Props = {
   file: Code | null;
   editorRef: React.MutableRefObject<ReactAce | null>;
+  onSave: (file: Code) => void;
 };
 
-export default function Editor({ file, editorRef }: Props) {
+export default function Editor({ file, editorRef, onSave }: Props) {
   const [value, setValue] = useState<string>("");
+  const fileRef = useRef(file);
 
   useEffect(() => {
     setValue(file && file.text ? file.text : "");
+    fileRef.current = file;
   }, [file]);
 
   return (
@@ -37,6 +40,17 @@ export default function Editor({ file, editorRef }: Props) {
         flexBasis: "80%",
         height: "100%",
       }}
+      commands={[
+        {
+          name: "saveFile",
+          bindKey: { win: "Ctrl-S", mac: "Command-S" },
+          exec: () => {
+            if (fileRef.current) {
+              onSave(fileRef.current);
+            }
+          },
+        },
+      ]}
     />
   );
 }

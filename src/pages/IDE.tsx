@@ -117,7 +117,7 @@ export default function IDE() {
 
   const editorRef = useRef<ReactAce | null>(null);
 
-  const onSave = () => {
+  const onSave = (file: Code) => {
     if (editorRef.current && file) {
       const text = editorRef.current.editor.getValue();
       updateCode.mutate({
@@ -130,7 +130,9 @@ export default function IDE() {
   };
 
   const onSaveMenuClick = () => {
-    onSave();
+    if (file) {
+      onSave(file);
+    }
   };
 
   const onAddFileMenuClick = () => {
