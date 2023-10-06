@@ -1,21 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import SearchInput from "./SearchInput";
+import MessagePresenter from "./MessagePresenter";
+import MessageInput from "./MessageInput";
 
 type Message = {
   sender: string;
   content: string;
   type: string;
 };
-
-function getRandomColor(): string {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
 
 function Chatting(): JSX.Element {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -49,12 +43,6 @@ function Chatting(): JSX.Element {
 
   // 메시지 입력 관련 이벤트 핸들러
   const handleMessageChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setMessage(e.target.value);
-  };
-
-  const handleUserNameChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const newUsername: string = e.target.value;
@@ -117,92 +105,39 @@ function Chatting(): JSX.Element {
 
   return (
     <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
-      <div className="p-4 border-b border-gray-300 flex items-center">
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded p-2 mr-2"
-          placeholder="Search Messages"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              messageSearch();
-            }
-          }}
-        />
-        <button
-          className="bg-blue-400 text-white font-thin letter-spacing-2 py-2 px-4 rounded disabled:opacity-50 letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80 cursor-pointer"
-          onClick={messageSearch}
-        >
-          SEARCH
-        </button>
-      </div>
-      <>
-        <div
-          className="flex-grow overflow-y-auto list-none bg-white shadow-lg rounded-lg border-2 border-gray-300 p-4 m-4"
-          ref={messageListRef}
-        >
-          <ul className="p-4">
-            {messages.map((message, index) => (
-              <li
-                className="flex items-center border-gray-300 py-2"
-                key={index}
-                ref={(el) => {
-                  messageRefs.current[index] = el;
-                  if (index === scrollToIndex) {
-                    scrollToRef.current = el;
-                  }
-                }}
-              >
-                <div
-                  className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2"
-                  style={{
-                    backgroundColor: userColors[message.sender]
-                      ? userColors[message.sender]
-                      : getRandomColor(),
-                  }}
-                >
-                  {message.sender ? message.sender.charAt(0) : ""}
-                </div>
-                <div>
-                  <p className="text-xs font-semibold">{message.sender}</p>
-                  <p className="text-gray-700">{message.content}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </>
+      <SearchInput
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        messageSearch={messageSearch}
+      />
+      <MessagePresenter
+        messages={messages}
+        userColors={userColors}
+        scrollToIndex={scrollToIndex}
+        messageRefs={messageRefs}
+      />
       <div className="p-4 border-none border-gray-300">
-        <div className="flex items-center">
-          <input
-            id="username"
-            type="text"
-            className="w-1/5 border border-gray-300 rounded p-2 mr-2"
-            placeholder="Name"
-            value={username}
-            onChange={handleUserNameChange}
-          />
-          <input
-            id="message"
-            type="text"
-            className="w-4/5 border border-gray-300 rounded p-2 mr-2"
-            placeholder="Write a message"
-            value={message}
-            onChange={handleMessageChange}
-            onKeyPress={handleKeyPress}
-          />
-          <button
-            className="bg-blue-400 text-white font-thin letter-spacing-2 py-2 px-4 rounded disabled:opacity-50 letter-spacing-2 hover:bg-blue-500 active:transform active:translate-y-3 active:border-transparent active:opacity-80 cursor-pointer"
-            onClick={handleSendClick}
-            disabled={!username.trim() || !message.trim()}
-          >
-            SEND
-          </button>
-        </div>
+        <MessageInput
+          username={username}
+          message={message}
+          setUsername={setUsername}
+          setMessage={setMessage}
+          handleSendClick={handleSendClick}
+          handleKeyPress={handleKeyPress}
+          userColors={userColors}
+        />
       </div>
     </div>
   );
+}
+
+export function getRandomColor(): string {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
 export default Chatting;
