@@ -25,7 +25,7 @@ const customStyles = {
     width: 85,
     textAlign: "center",
     ":hover": {
-      backgroundColor: "rgb(226 232 240)", // Set hover background color here
+      backgroundColor: "rgb(226 232 240)",
     },
   }),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,7 +57,7 @@ export default function IDEMenuButton({
       isSearchable={false}
       placeholder={placeholder}
       components={{
-        DropdownIndicator: null, // This removes the dropdown arrow indicator
+        DropdownIndicator: null,
       }}
       className={className ? className : ""}
       value={null}

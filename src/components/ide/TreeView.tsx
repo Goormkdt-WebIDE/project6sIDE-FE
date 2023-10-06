@@ -72,7 +72,6 @@ export default function TreeView({
 
   onRename,
 }: Props) {
-  console.log(data);
   return (
     <div className="flex flex-col">
       <h2>{data.name}</h2>
@@ -114,7 +113,6 @@ function Node({
   onClickFile,
   onClickDirectory,
 }: NodeRendererProps<Code | Directory> & AdditionalNodeProps) {
-  /* This node instance can do many things. See the API reference. */
   return (
     <div
       tabIndex={0}
