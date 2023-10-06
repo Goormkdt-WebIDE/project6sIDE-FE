@@ -6,14 +6,16 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 import modelist from "ace-builds/src-noconflict/ext-modelist";
 import { Code } from "./TreeView";
+import ReactAce from "react-ace/lib/ace";
 
 ace.config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
 
 type Props = {
   file: Code | null;
+  editorRef: React.MutableRefObject<ReactAce | null>;
 };
 
-export default function Editor({ file }: Props) {
+export default function Editor({ file, editorRef }: Props) {
   const [value, setValue] = useState<string>("");
 
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function Editor({ file }: Props) {
 
   return (
     <AceEditor
+      ref={editorRef}
       mode={file ? getModeByFileExtension(file.name) : "java"}
       theme="monokai"
       onChange={(value) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Editor from "../components/ide/Editor";
 import IDEHeader from "../components/ide/IDEHeader";
 import _ from "lodash";
@@ -11,6 +11,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
+import ReactAce from "react-ace/lib/ace";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -133,6 +134,20 @@ export default function IDE() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onToggle = (_: string) => {};
 
+  const editorRef = useRef<ReactAce | null>(null);
+
+  const onSaveMenuClick = () => {
+    if (editorRef.current && file) {
+      const text = editorRef.current.editor.getValue();
+      updateCode.mutate({
+        name: file.name,
+        text,
+        projectId: project?.id as string,
+        codeId: file.id,
+      });
+    }
+  };
+
   useEffect(() => {
     if (user && projectname && data) {
       const project = _.cloneDeep(data.data) as Code | Directory;
@@ -142,7 +157,7 @@ export default function IDE() {
 
   return (
     <>
-      <IDEHeader />
+      <IDEHeader onSaveMenuClick={onSaveMenuClick} />
       {project && (
         <div className="flex w-full h-full px-3 pb-10">
           <TreeView
@@ -155,7 +170,7 @@ export default function IDE() {
             onRename={onRename}
             onToggle={onToggle}
           />
-          <Editor file={file} />
+          <Editor file={file} editorRef={editorRef} />
         </div>
       )}
     </>

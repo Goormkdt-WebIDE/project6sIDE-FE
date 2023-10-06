@@ -10,6 +10,7 @@ type Props = {
   placeholder: string;
   className?: string;
   options?: Option[];
+  onClick: () => void;
 };
 
 const customStyles = {
@@ -38,13 +39,19 @@ export default function IDEMenuButton({
   placeholder,
   className,
   options,
+  onClick,
 }: Props) {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
 
   return (
     <Select
       defaultValue={selectedOption}
-      onChange={setSelectedOption}
+      onChange={(value) => {
+        setSelectedOption(value);
+        if (onClick) {
+          onClick();
+        }
+      }}
       options={options}
       styles={customStyles}
       isSearchable={false}

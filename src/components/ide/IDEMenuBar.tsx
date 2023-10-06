@@ -3,12 +3,16 @@ import IDEFileButton from "./IDEFileButton";
 import IDEEditButton from "./IDEEditButton";
 import IDESaveButton from "./IDESaveButton";
 
-export default function IDEMenuBar() {
+type Props = {
+  onSaveMenuClick: () => void;
+};
+
+export default function IDEMenuBar({ onSaveMenuClick }: Props) {
   return (
     <div className="flex">
       <IDEFileButton />
       <IDEEditButton />
-      <IDESaveButton />
+      <IDESaveButton onSaveMenuClick={onSaveMenuClick} />
     </div>
   );
 }
