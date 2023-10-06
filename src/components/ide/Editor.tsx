@@ -37,7 +37,7 @@ export default function Editor({ file, editorRef, onSave }: Props) {
       editorProps={{ $blockScrolling: true }}
       value={value}
       style={{
-        flexBasis: "80%",
+        flexBasis: "100%",
         height: "100%",
       }}
       commands={[

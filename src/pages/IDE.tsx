@@ -7,8 +7,10 @@ import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
+import Chatting from "../components/chatting/Chatting";
 import ReactAce from "react-ace/lib/ace";
 import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
+
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -173,14 +175,16 @@ export default function IDE() {
 
   return (
     <>
-      <IDEHeader
+     <IDEHeader
         onSaveMenuClick={onSaveMenuClick}
         onAddFileMenuClick={onAddFileMenuClick}
         onAddDirectoryMenuClick={onAddDirectoryMenuClick}
       />
-      {project && (
+      <div className="flex flex-col h-full">
         <div className="flex w-full h-full px-3 pb-10">
-          <TreeView
+          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "1" }}>
+            {project && (
+              <TreeView
             data={project}
             onClickFile={onClickFile}
             onClickDirectory={onClickDirectory}
@@ -188,9 +192,16 @@ export default function IDE() {
             onDelete={onDelete}
             onRename={onRename}
           />
-          <Editor file={file} editorRef={editorRef} onSave={onSave} />
+            )}
+          </div>
+          <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "3" }}>
+            <Editor file={file} editorRef={editorRef} onSave={onSave} />
+          </div>
+          <div style={{ flex: "2" }}>
+            <Chatting />
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
