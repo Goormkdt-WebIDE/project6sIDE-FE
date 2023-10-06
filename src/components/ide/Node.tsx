@@ -35,16 +35,18 @@ export default function Node({
       style={style}
       ref={dragHandle}
       onClick={handleClick}
-      className={`cursor-pointer hover:bg-slate-200 ${
+      className={`group cursor-pointer hover:bg-slate-200 ${
         node.state.isSelected
           ? "border border-blue-600 bg-slate-100 font-bold"
           : ""
       }`}
     >
-      <div className="flex items-center">
-        <NodeToggleArrow node={node} />
-        <NodeFileIcon node={node} />
-        <NodeName node={node} />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <NodeToggleArrow node={node} />
+          <NodeFileIcon node={node} />
+          <NodeName node={node} />
+        </div>
         <NodeActions node={node} tree={tree} />
       </div>
     </div>

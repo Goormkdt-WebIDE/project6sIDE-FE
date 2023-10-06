@@ -11,7 +11,7 @@ type Props = {
 
 export default function NodeActions({ node, tree }: Props) {
   return (
-    <div className="folderFileActions">
+    <div className="mr-3 invisible group-hover:visible">
       <button onClick={() => node.edit()} title="Rename...">
         <MdEdit />
       </button>

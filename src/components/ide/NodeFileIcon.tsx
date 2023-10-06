@@ -10,12 +10,12 @@ type Props = {
 
 export default function NodeFileIcon({ node }: Props) {
   return (
-    <>
+    <div className="mr-1">
       {node.data.type === "file" ? (
         <BsFillFileEarmarkCodeFill />
       ) : (
         <AiOutlineFolder />
       )}{" "}
-    </>
+    </div>
   );
 }
