@@ -11,7 +11,6 @@ import Chatting from "../components/chatting/Chatting";
 import ReactAce from "react-ace/lib/ace";
 import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
 
-
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
   const [file, setFile] = useState<Code | null>(null);
@@ -115,14 +114,15 @@ export default function IDE() {
   };
 
   const editorRef = useRef<ReactAce | null>(null);
+  const projectRef = useRef(project);
 
   const onSave = (file: Code) => {
-    if (editorRef.current && file) {
+    if (editorRef.current && file && (project || projectRef.current)) {
       const text = editorRef.current.editor.getValue();
       updateCode.mutate({
         name: file.name,
         text,
-        projectId: project?.id as string,
+        projectId: (project?.id || projectRef.current?.id) as string,
         codeId: file.id,
       });
     }
@@ -173,9 +173,13 @@ export default function IDE() {
     }
   }, [user, projectname, data]);
 
+  useEffect(() => {
+    projectRef.current = project;
+  }, [project]);
+
   return (
     <>
-     <IDEHeader
+      <IDEHeader
         onSaveMenuClick={onSaveMenuClick}
         onAddFileMenuClick={onAddFileMenuClick}
         onAddDirectoryMenuClick={onAddDirectoryMenuClick}
@@ -185,13 +189,13 @@ export default function IDE() {
           <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "1" }}>
             {project && (
               <TreeView
-            data={project}
-            onClickFile={onClickFile}
-            onClickDirectory={onClickDirectory}
-            onCreate={onCreate}
-            onDelete={onDelete}
-            onRename={onRename}
-          />
+                data={project}
+                onClickFile={onClickFile}
+                onClickDirectory={onClickDirectory}
+                onCreate={onCreate}
+                onDelete={onDelete}
+                onRename={onRename}
+              />
             )}
           </div>
           <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "3" }}>
