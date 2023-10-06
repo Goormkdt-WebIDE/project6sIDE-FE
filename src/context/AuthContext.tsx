@@ -87,9 +87,9 @@ function decodeToken(token: string) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [headerEncoded, payloadEncoded] = token.split(".");
 
-  const payloadStr = atob(payloadEncoded); // Base64 디코딩
+  const payloadStr = atob(payloadEncoded);
 
-  const payloadObj = JSON.parse(payloadStr); // JSON 파싱
+  const payloadObj = JSON.parse(payloadStr);
 
   return payloadObj;
 }

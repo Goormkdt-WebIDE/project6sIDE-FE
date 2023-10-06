@@ -1,66 +1,31 @@
 import axios from "axios";
-import { BASE_URL } from "../../common/constant";
+import { ideAPIRoute } from "../../common/constant";
 
 export type FormValue = {
   name: string;
   email: string;
 };
 
-const route = {
-  CREATE_NEW_PROJECT: BASE_URL + "/api/projects/save",
-  GET_PROJECT: BASE_URL + "/api/projects",
-  GET_ALL_PROJECTS: BASE_URL + "/api/projects/user",
-  ADD_ROOT_DIRECTORY(projectId: string) {
-    return BASE_URL + `/api/projects/${projectId}/directories`;
-  },
-  ADD_ROOT_CODE(projectId: string) {
-    return BASE_URL + `/api/projects/${projectId}/code`;
-  },
-  ADD_SUB_DIRECTORY(projectId: string, directoryId: string) {
-    return BASE_URL + `/api/projects/directories/${projectId}/${directoryId}`;
-  },
-  ADD_CODE_TO_SUB_DIRECTORY(projectId: string, directoryId: string) {
-    return (
-      BASE_URL + `/api/projects/directories/${projectId}/${directoryId}/code`
-    );
-  },
-  DELETE_DIRECTORY(projectId: string, directoryId: string) {
-    return BASE_URL + `/api/projects/directories/${projectId}/${directoryId}`;
-  },
-  DELETE_CODE(projectId: string, codeId: string) {
-    return BASE_URL + `/api/projects/${projectId}/${codeId}/code`;
-  },
-  DELETE_PROJECT(projectId: string) {
-    return BASE_URL + `/api/projects/${projectId}`;
-  },
-  UPDATE_DIRECTORY(projectId: string, directoryId: string) {
-    return BASE_URL + `/api/projects/${projectId}/${directoryId}/directories`;
-  },
-  UPDATE_CODE(projectId: string, codeId: string) {
-    return BASE_URL + `/api/projects/${projectId}/${codeId}/code`;
-  },
-};
-
 export async function createNewProject(data: FormValue) {
-  return axios.post(route.CREATE_NEW_PROJECT, {
+  return axios.post(ideAPIRoute.CREATE_NEW_PROJECT, {
     name: data.name,
     email: data.email,
   });
 }
 
 export async function getProject(data: FormValue) {
-  return axios.post(route.GET_PROJECT, {
+  return axios.post(ideAPIRoute.GET_PROJECT, {
     email: data.email,
     projectName: data.name,
   });
 }
 
 export async function getAllProjects() {
-  return axios.get(route.GET_ALL_PROJECTS);
+  return axios.get(ideAPIRoute.GET_ALL_PROJECTS);
 }
 
 export async function addRootDirectory(name: string, projectId: string) {
-  return axios.post(route.ADD_ROOT_DIRECTORY(projectId), {
+  return axios.post(ideAPIRoute.ADD_ROOT_DIRECTORY(projectId), {
     name,
   });
 }
@@ -70,7 +35,7 @@ export async function addRootCode(
   text: string,
   projectId: string
 ) {
-  return axios.post(route.ADD_ROOT_CODE(projectId), {
+  return axios.post(ideAPIRoute.ADD_ROOT_CODE(projectId), {
     name,
     text,
   });
@@ -81,7 +46,7 @@ export async function addSubDirectory(
   projectId: string,
   directoryId: string
 ) {
-  return axios.post(route.ADD_SUB_DIRECTORY(projectId, directoryId), {
+  return axios.post(ideAPIRoute.ADD_SUB_DIRECTORY(projectId, directoryId), {
     name,
   });
 }
@@ -92,22 +57,25 @@ export async function addCodeToSubDirectory(
   projectId: string,
   directoryId: string
 ) {
-  return axios.post(route.ADD_CODE_TO_SUB_DIRECTORY(projectId, directoryId), {
-    name,
-    text,
-  });
+  return axios.post(
+    ideAPIRoute.ADD_CODE_TO_SUB_DIRECTORY(projectId, directoryId),
+    {
+      name,
+      text,
+    }
+  );
 }
 
 export async function deleteDirectory(projectId: string, directoryId: string) {
-  return axios.delete(route.DELETE_DIRECTORY(projectId, directoryId));
+  return axios.delete(ideAPIRoute.DELETE_DIRECTORY(projectId, directoryId));
 }
 
 export async function deleteCode(projectId: string, codeId: string) {
-  return axios.delete(route.DELETE_CODE(projectId, codeId));
+  return axios.delete(ideAPIRoute.DELETE_CODE(projectId, codeId));
 }
 
 export async function deleteProject(projectId: string) {
-  return axios.delete(route.DELETE_PROJECT(projectId));
+  return axios.delete(ideAPIRoute.DELETE_PROJECT(projectId));
 }
 
 export async function updateDirectory(
@@ -115,7 +83,7 @@ export async function updateDirectory(
   projectId: string,
   directoryId: string
 ) {
-  return axios.patch(route.UPDATE_DIRECTORY(projectId, directoryId), {
+  return axios.patch(ideAPIRoute.UPDATE_DIRECTORY(projectId, directoryId), {
     name,
   });
 }
@@ -126,7 +94,7 @@ export async function updateCode(
   projectId: string,
   codeId: string
 ) {
-  return axios.patch(route.UPDATE_CODE(projectId, codeId), {
+  return axios.patch(ideAPIRoute.UPDATE_CODE(projectId, codeId), {
     name,
     text,
   });

@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Editor from "../components/ide/Editor";
 import IDEHeader from "../components/ide/IDEHeader";
 import _ from "lodash";
-import TreeView, {
-  Code,
-  Directory,
-  TreeNode,
-} from "../components/ide/TreeView";
+import TreeView from "../components/ide/TreeView";
 import { useAuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
 import Chatting from "../components/chatting/Chatting";
+import ReactAce from "react-ace/lib/ace";
+import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
+
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -90,22 +89,6 @@ export default function IDE() {
     });
   };
 
-  const onMove = ({
-    dragIds,
-    dragNodes,
-    parentId,
-    parentNode,
-    index,
-  }: {
-    dragIds: string[];
-    dragNodes: NodeApi<Directory | Code>[];
-    parentId: string | null;
-    parentNode: NodeApi<Directory | Code> | null;
-    index: number;
-  }) => {
-    console.log(dragIds, dragNodes, parentId, parentNode, index);
-  };
-
   const onRename = ({
     id,
     name,
@@ -131,8 +114,57 @@ export default function IDE() {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onToggle = (_: string) => {};
+  const editorRef = useRef<ReactAce | null>(null);
+
+  const onSave = (file: Code) => {
+    if (editorRef.current && file) {
+      const text = editorRef.current.editor.getValue();
+      updateCode.mutate({
+        name: file.name,
+        text,
+        projectId: project?.id as string,
+        codeId: file.id,
+      });
+    }
+  };
+
+  const onSaveMenuClick = () => {
+    if (file) {
+      onSave(file);
+    }
+  };
+
+  const onAddFileMenuClick = () => {
+    if (directory) {
+      addCodeToSubDirectory.mutate({
+        name: "",
+        text: "",
+        projectId: project?.id as string,
+        directoryId: directory,
+      });
+    } else {
+      addRootCode.mutate({
+        text: "",
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+  };
+
+  const onAddDirectoryMenuClick = () => {
+    if (directory) {
+      addSubDirectory.mutate({
+        name: "",
+        projectId: project?.id as string,
+        directoryId: directory,
+      });
+    } else {
+      addRootDirectory.mutate({
+        name: "",
+        projectId: project?.id as string,
+      });
+    }
+  };
 
   useEffect(() => {
     if (user && projectname && data) {
@@ -143,25 +175,27 @@ export default function IDE() {
 
   return (
     <>
-      <IDEHeader />
+     <IDEHeader
+        onSaveMenuClick={onSaveMenuClick}
+        onAddFileMenuClick={onAddFileMenuClick}
+        onAddDirectoryMenuClick={onAddDirectoryMenuClick}
+      />
       <div className="flex flex-col h-full">
         <div className="flex w-full h-full px-3 pb-10">
           <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "1" }}>
             {project && (
               <TreeView
-                data={project}
-                onClickFile={onClickFile}
-                onClickDirectory={onClickDirectory}
-                onCreate={onCreate}
-                onDelete={onDelete}
-                onMove={onMove}
-                onRename={onRename}
-                onToggle={onToggle}
-              />
+            data={project}
+            onClickFile={onClickFile}
+            onClickDirectory={onClickDirectory}
+            onCreate={onCreate}
+            onDelete={onDelete}
+            onRename={onRename}
+          />
             )}
           </div>
           <div className="flex w-full h-full pt-4 pb-4" style={{ flex: "3" }}>
-            <Editor file={file} />
+            <Editor file={file} editorRef={editorRef} onSave={onSave} />
           </div>
           <div style={{ flex: "2" }}>
             <Chatting />
