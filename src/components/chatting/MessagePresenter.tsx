@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { MutableRefObject, RefObject, useEffect } from "react";
 
 type Message = {
   sender: string;
@@ -9,7 +9,7 @@ type MessagePresenterProps = {
   messages: Message[];
   userColors: Record<string, string>;
   scrollToIndex: number;
-  messageRefs: RefObject<HTMLLIElement | null>[];
+  messageRefs: MutableRefObject<HTMLLIElement | null>[];
   messageListRef: RefObject<HTMLDivElement>;
 };
 
@@ -22,13 +22,13 @@ function MessagePresenter({
 }: MessagePresenterProps) {
   useEffect(() => {
     // messages 배열이 업데이트될 때 스크롤 이동 로직을 실행하세요.
-    if (messageListRef.current && scrollToIndex !== -1) {
-      const targetElement = messageRefs.current[scrollToIndex];
+    if (messageListRef.current && scrollToIndex !== -1 && messageRefs) {
+      const targetElement = messageRefs[scrollToIndex].current;
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [messages, scrollToIndex]);
+  }, [messageListRef, messageRefs, messages, scrollToIndex]);
 
   return (
     <div
@@ -42,7 +42,9 @@ function MessagePresenter({
               className="flex items-center border-gray-300 py-2"
               key={index}
               ref={(el) => {
-                messageRefs.current[index] = el;
+                if (el && messageRefs) {
+                  messageRefs[index].current = el;
+                }
               }}
             >
               <div
