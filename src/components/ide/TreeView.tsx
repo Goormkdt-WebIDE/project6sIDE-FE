@@ -1,7 +1,6 @@
 import React from "react";
 import { Tree } from "react-arborist";
 import { IdObj } from "react-arborist/dist/types/utils";
-
 import {
   Code,
   Directory,
