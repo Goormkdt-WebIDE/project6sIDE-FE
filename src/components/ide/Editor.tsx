@@ -32,6 +32,9 @@ export default function Editor({ file, editorRef, onSave }: Props) {
       theme="monokai"
       onChange={(value) => {
         setValue(value);
+        if (fileRef.current) {
+          fileRef.current.text = value;
+        }
       }}
       className="!w-full !h-full md:basis-[60%]"
       name="UNIQUE_ID_OF_DIV"
