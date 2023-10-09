@@ -28,6 +28,7 @@
     "react-router-dom": "^6.16.0",
     "react-select": "^5.7.5",
     "react-toastify": "^9.1.3",
+    "rollup-plugin-copy": "^3.5.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "swiper": "^10.3.1"

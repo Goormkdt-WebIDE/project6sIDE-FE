@@ -8,7 +8,7 @@ import modelist from "ace-builds/src-noconflict/ext-modelist";
 import ReactAce from "react-ace/lib/ace";
 import { Code } from "../types/TreeView.types";
 
-ace.config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
+ace.config.set("basePath", "/ace-builds");
 
 type Props = {
   file: Code | null;
