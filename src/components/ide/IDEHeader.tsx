@@ -16,9 +16,10 @@ export default function IDEHeader({
   return (
     <header className="flex p-2 items-center">
       <Link to="/">
-        <h1 className="text-blue-700 font-bold text-lg mr-10">6S IDE</h1>
+        <h1 className="text-blue-700 font-bold text-lg md:mr-10">6S IDE</h1>
       </Link>
       <IDEMenuBar
+        className="ml-20 md:ml-0"
         onSaveMenuClick={onSaveMenuClick}
         onAddFileMenuClick={onAddFileMenuClick}
         onAddDirectoryMenuClick={onAddDirectoryMenuClick}

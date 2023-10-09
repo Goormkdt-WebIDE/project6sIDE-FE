@@ -24,6 +24,7 @@ type Props = {
   }: onCreateArgs) => IdObj | Promise<IdObj | null> | null;
   onDelete: ({ ids, nodes }: onDeleteArgs) => void;
   onRename: ({ id, name, node }: onRenameArgs) => void;
+  className?: string;
 };
 
 export default function TreeView({
@@ -33,9 +34,10 @@ export default function TreeView({
   onCreate,
   onDelete,
   onRename,
+  className,
 }: Props) {
   return (
-    <div className="basis-1/5 flex flex-col">
+    <div className={`flex flex-col md:basis-1/5 ${className}`}>
       <h2>{data.name}</h2>
       <Tree
         data={data.children}

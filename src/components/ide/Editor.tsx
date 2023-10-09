@@ -33,13 +33,10 @@ export default function Editor({ file, editorRef, onSave }: Props) {
       onChange={(value) => {
         setValue(value);
       }}
+      className="!w-full !h-full md:basis-[60%]"
       name="UNIQUE_ID_OF_DIV"
       editorProps={{ $blockScrolling: true }}
       value={value}
-      style={{
-        height: "100%",
-        flexBasis: "50%",
-      }}
       commands={[
         {
           name: "saveFile",
