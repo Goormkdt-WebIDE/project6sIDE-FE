@@ -1,8 +1,9 @@
 import "@testing-library/jest-dom";
 import { FieldError } from "react-hook-form";
-import NameInput from "../NameInput";
+import NameInput from "../form/NameInput";
 import { render, screen } from "@testing-library/react";
 import React from "react";
+import { FormValue } from "../../service/http-requests/user-api";
 
 describe("NameInput", () => {
   const register = jest.fn();
@@ -34,10 +35,11 @@ describe("NameInput", () => {
 
   function renderNameInput(placeholder?: string, error?: FieldError) {
     return render(
-      <NameInput
+      <NameInput<FormValue>
         register={register}
         errors={{ name: error }}
         placeholder={placeholder}
+        name="name"
       />
     );
   }

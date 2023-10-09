@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import SubmitButton from "../SubmitButton";
+import SubmitButton from "../form/SubmitButton";
 
 const buttonText = "버튼";
 
