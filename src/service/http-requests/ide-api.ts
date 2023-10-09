@@ -13,6 +13,10 @@ export async function createNewProject(data: FormValue) {
   });
 }
 
+export async function deleteProject(projectId: string) {
+  return axios.delete(ideAPIRoute.DELETE_PROJECT(projectId));
+}
+
 export async function getProject(data: FormValue) {
   return axios.post(ideAPIRoute.GET_PROJECT, {
     email: data.email,
@@ -72,10 +76,6 @@ export async function deleteDirectory(projectId: string, directoryId: string) {
 
 export async function deleteCode(projectId: string, codeId: string) {
   return axios.delete(ideAPIRoute.DELETE_CODE(projectId, codeId));
-}
-
-export async function deleteProject(projectId: string) {
-  return axios.delete(ideAPIRoute.DELETE_PROJECT(projectId));
 }
 
 export async function updateDirectory(

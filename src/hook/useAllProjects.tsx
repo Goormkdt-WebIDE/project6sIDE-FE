@@ -5,6 +5,7 @@ import { useAuthContext } from "../context/AuthContext";
 import {
   getAllProjects,
   createNewProject as createNewProjectAPI,
+  deleteProject as deleteProjectAPI,
   FormValue,
 } from "../service/http-requests/ide-api";
 
@@ -32,5 +33,14 @@ export default function useAllProjects() {
     }
   );
 
-  return { allProjectQuery, createNewProject };
+  const deleteProject = useMutation(
+    (projectId: string) => deleteProjectAPI(projectId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([baseQuery, user?.email]);
+      },
+    }
+  );
+
+  return { allProjectQuery, createNewProject, deleteProject };
 }
