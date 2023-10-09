@@ -6,16 +6,34 @@ import Login from "./pages/Login";
 import PasswordReset from "./pages/PasswordReset";
 import IDE from "./pages/IDE";
 import Main from "./pages/Main";
+import ProtectedRoute from "./pages/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index path="/" element={<Main />} />
+        <Route
+          index
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Main />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/password-reset" element={<PasswordReset />} />
-        <Route path="/workspace/:projectname" element={<IDE />} />
+        <Route
+          path="/workspace/:projectname"
+          element={
+            <ProtectedRoute>
+              <IDE />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
