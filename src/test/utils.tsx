@@ -26,6 +26,7 @@ export function withAuthContext(
       jest.fn().mockResolvedValue({} as AxiosResponse<unknown, unknown>),
     onAuthStateChange: authObject.onAuthStateChange || jest.fn(),
     user: authObject.user || undefined,
+    isInitializing: false,
   };
   return (
     <AuthContext.Provider value={completeAuthObject}>

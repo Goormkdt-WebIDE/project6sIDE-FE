@@ -7,9 +7,9 @@ type Props = {
 };
 
 export default function ProtectedRoute({ children }: Props) {
-  const { user } = useAuthContext();
+  const { user, isInitializing } = useAuthContext();
 
-  if (!user) {
+  if (!user && !isInitializing) {
     return <Navigate to="/login" replace />;
   }
 
