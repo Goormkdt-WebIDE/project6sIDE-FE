@@ -20,7 +20,8 @@ export interface AuthContextProps {
   register: (data: FormValue) => Promise<AxiosResponse<unknown, unknown>>;
   passwordReset: (data: FormValue) => Promise<AxiosResponse<unknown, unknown>>;
   onAuthStateChange: (type: AuthStateChangeType) => void;
-  user: User | undefined;
+  user: User | undefined | null;
+  isInitializing: boolean;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -30,6 +31,7 @@ export const AuthContext = createContext<AuthContextProps>({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAuthStateChange: (_: AuthStateChangeType) => {},
   user: undefined,
+  isInitializing: true,
 });
 
 type Props = {
@@ -37,32 +39,40 @@ type Props = {
 };
 
 export function AuthContextProvider({ children }: Props) {
-  const [user, setUser] = useState<undefined | User>();
+  const [user, setUser] = useState<undefined | User | null>();
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  useEffect(() => {
+  const initialize = () => {
     const token = getToken("token");
     const decodedUser = token && decodeToken(token);
-    if (token) {
+    if (token && decodedUser) {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      setUser(decodedUser);
     }
-    setUser(decodedUser);
+  };
+
+  useEffect(() => {
+    initialize();
+    setIsInitializing(false);
   }, []);
 
   const onAuthStateChange = (type: AuthStateChangeType) => {
     if (type === "login") {
-      const token = getToken("token");
-      const decodedUser = token && decodeToken(token);
-      if (token) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      }
-      setUser(decodedUser);
+      initialize();
       return;
     }
     setUser(undefined);
   };
   return (
     <AuthContext.Provider
-      value={{ login, register, passwordReset, onAuthStateChange, user }}
+      value={{
+        login,
+        register,
+        passwordReset,
+        onAuthStateChange,
+        user,
+        isInitializing,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -83,13 +93,19 @@ function getToken(name: string) {
   }
 }
 
-function decodeToken(token: string) {
+function decodeToken(token: string): User | null {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [headerEncoded, payloadEncoded] = token.split(".");
 
   const payloadStr = atob(payloadEncoded);
 
   const payloadObj = JSON.parse(payloadStr);
+
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+
+  if (payloadObj.exp && payloadObj.exp < currentTimestamp) {
+    return null;
+  }
 
   return payloadObj;
 }
