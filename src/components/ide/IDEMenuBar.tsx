@@ -1,14 +1,25 @@
 import React from "react";
 import IDEFileButton from "./IDEFileButton";
-import IDEEditButton from "./IDEEditButton";
 import IDESaveButton from "./IDESaveButton";
 
-export default function IDEMenuBar() {
+type Props = {
+  onSaveMenuClick: () => void;
+  onAddFileMenuClick: () => void;
+  onAddDirectoryMenuClick: () => void;
+};
+
+export default function IDEMenuBar({
+  onSaveMenuClick,
+  onAddFileMenuClick,
+  onAddDirectoryMenuClick,
+}: Props) {
   return (
     <div className="flex">
-      <IDEFileButton />
-      <IDEEditButton />
-      <IDESaveButton />
+      <IDEFileButton
+        onAddFileMenuClick={onAddFileMenuClick}
+        onAddDirectoryMenuClick={onAddDirectoryMenuClick}
+      />
+      <IDESaveButton onSaveMenuClick={onSaveMenuClick} />
     </div>
   );
 }

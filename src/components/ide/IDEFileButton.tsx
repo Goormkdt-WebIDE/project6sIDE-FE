@@ -1,23 +1,41 @@
 import React from "react";
 import IDEMenuButton from "./IDEMenuButton";
 
+const addFileValue = "새 파일";
+const addFolderValue = "새 폴더";
+
 const options = [
   {
-    value: "새 파일",
-    label: "새 파일",
+    value: addFileValue,
+    label: addFileValue,
   },
   {
-    value: "새 폴더",
-    label: "새 폴더",
-  },
-  {
-    value: "이름 수정",
-    label: "이름 수정",
+    value: addFolderValue,
+    label: addFolderValue,
   },
 ];
 
-export default function IDEFileButton() {
+type Props = {
+  onAddFileMenuClick: () => void;
+  onAddDirectoryMenuClick: () => void;
+};
+
+export default function IDEFileButton({
+  onAddFileMenuClick,
+  onAddDirectoryMenuClick,
+}: Props) {
   return (
-    <IDEMenuButton placeholder="파일" className="mr-5" options={options} />
+    <IDEMenuButton
+      placeholder="파일"
+      className="mr-5"
+      options={options}
+      onClick={(v) => {
+        if (v) {
+          v.value === addFileValue
+            ? onAddFileMenuClick()
+            : onAddDirectoryMenuClick();
+        }
+      }}
+    />
   );
 }
