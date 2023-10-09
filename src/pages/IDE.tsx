@@ -9,7 +9,13 @@ import useProjects from "../hook/useProjects";
 import { NodeApi } from "react-arborist";
 import Chatting from "../components/chatting/Chatting";
 import ReactAce from "react-ace/lib/ace";
+import { slide as Menu } from "react-burger-menu";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
 import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
+import "../components/ide/Menu.css";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -186,17 +192,52 @@ export default function IDE() {
       />
       <div className="flex w-full h-full px-3 pb-10">
         {project && (
-          <TreeView
-            data={project}
-            onClickFile={onClickFile}
-            onClickDirectory={onClickDirectory}
-            onCreate={onCreate}
-            onDelete={onDelete}
-            onRename={onRename}
-          />
+          <>
+            <Menu
+              burgerButtonClassName="-translate-y-6 translate-x-12 z-10  md:hidden"
+              className="block md:hidden"
+            >
+              <TreeView
+                data={project}
+                onClickFile={onClickFile}
+                onClickDirectory={onClickDirectory}
+                onCreate={onCreate}
+                onDelete={onDelete}
+                onRename={onRename}
+              />
+            </Menu>
+            <TreeView
+              data={project}
+              onClickFile={onClickFile}
+              onClickDirectory={onClickDirectory}
+              onCreate={onCreate}
+              onDelete={onDelete}
+              onRename={onRename}
+              className="hidden md:flex"
+            />
+          </>
         )}
-        <Editor file={file} editorRef={editorRef} onSave={onSave} />
-        <Chatting />
+        <Swiper
+          className="mySwiper md:hidden"
+          modules={[Pagination]}
+          pagination={{
+            clickable: true,
+          }}
+          allowTouchMove={false}
+          allowSlideNext={true}
+          allowSlidePrev={true}
+        >
+          <SwiperSlide>
+            <Editor file={file} editorRef={editorRef} onSave={onSave} />
+          </SwiperSlide>
+          <SwiperSlide>
+            <Chatting />
+          </SwiperSlide>
+        </Swiper>
+        <div className="hidden md:flex md:basis-4/5">
+          <Editor file={file} editorRef={editorRef} onSave={onSave} />
+          <Chatting />
+        </div>
       </div>
     </>
   );

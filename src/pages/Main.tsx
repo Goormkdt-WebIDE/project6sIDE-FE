@@ -10,7 +10,7 @@ function Main() {
           <h1 className="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin">
             6S IDE
           </h1>
-          <div className="flex items-center justify-center w-full">
+          <div className="flex flex-col items-center justify-center w-full md:flex-row">
             <NewProject />
             <MyProjects />
           </div>

@@ -92,7 +92,7 @@ function Chatting(): JSX.Element {
   };
 
   return (
-    <div className="basis-[30%] container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
+    <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25 md:basis-[40%]">
       <SearchInput
         searchValue={searchValue}
         setSearchValue={setSearchValue}
