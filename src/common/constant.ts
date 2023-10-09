@@ -8,6 +8,9 @@ export const userAPIRoute = {
 
 export const ideAPIRoute = {
   CREATE_NEW_PROJECT: BASE_URL + "/api/projects/save",
+  DELETE_PROJECT(projectId: string) {
+    return BASE_URL + `/api/projects/${projectId}`;
+  },
   GET_PROJECT: BASE_URL + "/api/projects",
   GET_ALL_PROJECTS: BASE_URL + "/api/projects/user",
   ADD_ROOT_DIRECTORY(projectId: string) {
@@ -30,9 +33,7 @@ export const ideAPIRoute = {
   DELETE_CODE(projectId: string, codeId: string) {
     return BASE_URL + `/api/projects/${projectId}/${codeId}/code`;
   },
-  DELETE_PROJECT(projectId: string) {
-    return BASE_URL + `/api/projects/${projectId}`;
-  },
+
   UPDATE_DIRECTORY(projectId: string, directoryId: string) {
     return BASE_URL + `/api/projects/${projectId}/${directoryId}/directories`;
   },
