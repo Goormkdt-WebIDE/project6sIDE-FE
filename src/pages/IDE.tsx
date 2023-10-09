@@ -124,7 +124,7 @@ export default function IDE() {
 
   const onSave = (file: Code) => {
     if (editorRef.current && file && (project || projectRef.current)) {
-      const text = editorRef.current.editor.getValue();
+      const text = file.text || editorRef.current.editor.getValue();
       updateCode.mutate({
         name: file.name,
         text,
