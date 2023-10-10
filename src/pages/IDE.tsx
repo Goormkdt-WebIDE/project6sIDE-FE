@@ -198,7 +198,7 @@ export default function IDE() {
               burgerButtonClassName="-translate-y-6 translate-x-12 z-10  md:hidden"
               className="block md:hidden relative"
             >
-              <TopBtnContainer className="!flex md:hidden left-2" />
+              <TopBtnContainer className="!flex left-2" />
               <TreeView
                 data={project}
                 onClickFile={onClickFile}

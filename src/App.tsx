@@ -9,6 +9,7 @@ import Main from "./pages/Main";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import AuthRedirect from "./pages/AuthRedirect";
+import IDELayout from "./layout/IDELayout";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
           }
         />
         <Route path="/password-reset" element={<PasswordReset />} />
+      </Route>
+      <Route path="/workspace/:projectname" element={<IDELayout />}>
         <Route
           path="/workspace/:projectname"
           element={
@@ -48,8 +51,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
