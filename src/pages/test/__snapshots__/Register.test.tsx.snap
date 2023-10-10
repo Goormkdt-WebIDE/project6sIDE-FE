@@ -17,7 +17,7 @@ exports[`Register 스냅샷 테스트 1`] = `
           6S IDE
         </h1>
         <h3
-          class="text-black text-3xl pb-4 mb-2 border-none font-thin"
+          class="text-black text-3xl pb-4 mb-2 border-none font-thin "
         >
           Register
         </h3>
@@ -48,7 +48,7 @@ exports[`Register 스냅샷 테스트 1`] = `
             Register
           </button>
           <a
-            class="text-gray-600 text-sm mt-4"
+            class="text-gray-600 text-sm mt-4 "
             href="/login"
           >
             Already have an account? Sign in

@@ -62,6 +62,7 @@ export function AuthContextProvider({ children }: Props) {
       return;
     }
     setUser(undefined);
+    delete axios.defaults.headers.common["Authorization"];
   };
   return (
     <AuthContext.Provider

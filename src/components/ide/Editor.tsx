@@ -28,32 +28,32 @@ export default function Editor({ file, editorRef, onSave }: Props) {
   }, [file]);
 
   return (
-      <AceEditor
-        ref={editorRef}
-        mode={file ? getModeByFileExtension(file.name) : "java"}
-        theme={theme.theme === 'light' ? 'crimson_editor' : 'nord_dark'}
-        onChange={(value) => {
-          setValue(value);
-          if (fileRef.current) {
-            fileRef.current.text = value;
-          }
-        }}
-        className="!w-full !h-full md:basis-[60%]"
-        name="UNIQUE_ID_OF_DIV"
-        editorProps={{ $blockScrolling: true }}
-        value={value}
-        commands={[
-          {
-            name: "saveFile",
-            bindKey: { win: "Ctrl-S", mac: "Command-S" },
-            exec: () => {
-              if (fileRef.current) {
-                onSave(fileRef.current);
-              }
-            },
+    <AceEditor
+      ref={editorRef}
+      mode={file ? getModeByFileExtension(file.name) : "java"}
+      theme={theme.theme === "light" ? "crimson_editor" : "nord_dark"}
+      onChange={(value) => {
+        setValue(value);
+        if (fileRef.current) {
+          fileRef.current.text = value;
+        }
+      }}
+      className="!w-full !h-full md:!basis-[60%]"
+      name="UNIQUE_ID_OF_DIV"
+      editorProps={{ $blockScrolling: true }}
+      value={value}
+      commands={[
+        {
+          name: "saveFile",
+          bindKey: { win: "Ctrl-S", mac: "Command-S" },
+          exec: () => {
+            if (fileRef.current) {
+              onSave(fileRef.current);
+            }
           },
-        ]}
-      />
+        },
+      ]}
+    />
   );
 }
 
