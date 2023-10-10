@@ -1,5 +1,3 @@
-import React, { ChangeEvent, KeyboardEvent } from "react";
-
 type SearchInputProps = {
   searchValue: string;
   setSearchValue: (value: string) => void;

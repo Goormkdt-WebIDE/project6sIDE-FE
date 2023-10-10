@@ -1,5 +1,4 @@
 import React from "react";
-import { getRandomColor } from "./Chatting";
 
 type MessageInputProps = {
   username: string;

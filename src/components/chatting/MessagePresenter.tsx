@@ -26,7 +26,10 @@ function MessagePresenter({
     if (messageListRef.current && scrollToIndex !== -1) {
       const targetElement = messageRefs.current[scrollToIndex];
       if (targetElement && targetElement.current) {
-        targetElement.current.scrollIntoView({ behavior: "smooth" });
+        const top = targetElement.current.offsetTop;
+        if (top && messageListRef.current) {
+          messageListRef.current.scrollTop = top;
+        }
       }
     }
   }, [messageListRef, messageRefs, messages, scrollToIndex]);
