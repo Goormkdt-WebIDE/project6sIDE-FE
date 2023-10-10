@@ -14,7 +14,7 @@ export default function Layout() {
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
         <ThemeProvider>
-          <>
+          <div className="relative">
             <TopBtnContainer />
             <main className="h-screen overflow-hidden pb-4">
               <Outlet />
@@ -31,7 +31,7 @@ export default function Layout() {
                 theme="light"
               />
             </main>
-          </>
+          </div>
         </ThemeProvider>
       </AuthContextProvider>
     </QueryClientProvider>

@@ -8,6 +8,7 @@ import IDE from "./pages/IDE";
 import Main from "./pages/Main";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import AuthRedirect from "./pages/AuthRedirect";
 
 function App() {
   return (
@@ -22,8 +23,22 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={
+            <AuthRedirect>
+              <Login />
+            </AuthRedirect>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthRedirect>
+              <Register />
+            </AuthRedirect>
+          }
+        />
         <Route path="/password-reset" element={<PasswordReset />} />
         <Route
           path="/workspace/:projectname"
