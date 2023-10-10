@@ -87,10 +87,10 @@ function Chatting(): JSX.Element {
 
     if (index !== -1) {
       if (messageRefs.current[index]) {
-        messageRefs.current[index]?.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        const top = messageRefs.current[index]?.current?.offsetTop;
+        if (top && messageListRef.current) {
+          messageListRef.current.scrollTop = top;
+        }
         setNextMatchIndex(index);
         setScrollToIndex(index);
       }

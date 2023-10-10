@@ -22,7 +22,7 @@ function TopBtnContainer() {
   };
 
   return (
-    <div className="absolute right-3 top-1 z-10 flex items-center">
+    <div className="absolute right-3 -top-2  z-10 flex items-center md:top-2">
       {!user && !isInitializing ? (
         ""
       ) : (
