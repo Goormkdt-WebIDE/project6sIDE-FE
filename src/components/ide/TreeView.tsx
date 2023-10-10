@@ -9,8 +9,10 @@ import {
   onRenameArgs,
 } from "../types/TreeView.types";
 import Node from "./Node";
+import { useTheme } from "../../context/isDarkModeContext";
 
 const treeClassname = "tree";
+
 
 type Props = {
   data: Directory;
@@ -36,9 +38,12 @@ export default function TreeView({
   onRename,
   className,
 }: Props) {
+  
+  const theme = useTheme();
+
   return (
     <div className={`flex flex-col md:basis-1/5 ${className}`}>
-      <h2>{data.name}</h2>
+      <h2 className={`${theme.theme === 'dark' ? 'text-white' : ''}`}>{data.name}</h2>
       <Tree
         data={data.children}
         onCreate={onCreate}
