@@ -5,7 +5,11 @@ import { FiSun } from "react-icons/fi";
 import { BsMoonStars } from "react-icons/bs";
 import { useAuthContext } from "../context/AuthContext";
 
-function TopBtnContainer() {
+type Props = {
+  className?: string;
+};
+
+function TopBtnContainer({ className }: Props) {
   const { theme, toggleDarkMode } = useTheme();
   const { user, isInitializing, onAuthStateChange } = useAuthContext();
 
@@ -22,7 +26,9 @@ function TopBtnContainer() {
   };
 
   return (
-    <div className="absolute right-3 -top-2  z-10 flex items-center md:top-2">
+    <div
+      className={`absolute right-3 -top-2  z-10 flex items-center md:top-2 ${className}`}
+    >
       {!user && !isInitializing ? (
         ""
       ) : (

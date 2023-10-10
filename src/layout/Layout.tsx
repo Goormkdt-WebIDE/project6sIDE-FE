@@ -15,7 +15,7 @@ export default function Layout() {
       <AuthContextProvider>
         <ThemeProvider>
           <div className="relative">
-            <TopBtnContainer />
+            <TopBtnContainer className="hidden md:flex" />
             <main className="h-screen overflow-hidden pb-4">
               <Outlet />
               <ToastContainer

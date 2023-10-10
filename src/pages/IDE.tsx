@@ -16,6 +16,7 @@ import { Code, Directory, TreeNode } from "../components/types/TreeView.types";
 import "../components/ide/Menu.css";
 import "swiper/css";
 import "swiper/css/pagination";
+import TopBtnContainer from "../components/TopBtnContainer";
 
 export default function IDE() {
   const [project, setProject] = useState<Directory>();
@@ -195,8 +196,9 @@ export default function IDE() {
           <>
             <Menu
               burgerButtonClassName="-translate-y-6 translate-x-12 z-10  md:hidden"
-              className="block md:hidden"
+              className="block md:hidden relative"
             >
+              <TopBtnContainer className="!flex md:hidden left-2" />
               <TreeView
                 data={project}
                 onClickFile={onClickFile}
