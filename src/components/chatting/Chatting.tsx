@@ -3,7 +3,6 @@ import React, {
   useState,
   useRef,
   RefObject,
-  ChangeEvent,
   KeyboardEvent,
 } from "react";
 import { Stomp } from "@stomp/stompjs";
@@ -47,20 +46,6 @@ function Chatting(): JSX.Element {
       client.disconnect();
     };
   }, []);
-
-  // 메시지 입력 관련 이벤트 핸들러
-  const handleMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const newUsername: string = e.target.value;
-    setUsername(newUsername);
-
-    if (!userColors[newUsername]) {
-      const newColor: string = getRandomColor();
-      setUserColors((prevColors) => ({
-        ...prevColors,
-        [newUsername]: newColor,
-      }));
-    }
-  };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && username.trim() && message.trim()) {

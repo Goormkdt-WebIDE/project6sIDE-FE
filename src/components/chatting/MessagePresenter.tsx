@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, RefObject } from "react";
+import React, { useEffect, RefObject, MutableRefObject, useRef } from "react";
 
 type Message = {
   sender: string;
@@ -9,7 +9,7 @@ type MessagePresenterProps = {
   messages: Message[];
   userColors: Record<string, string>;
   scrollToIndex: number;
-  messageRefs: RefObject<HTMLLIElement | null>[];
+  messageRefs: MutableRefObject<React.MutableRefObject<HTMLLIElement | null>[]>;
   messageListRef: RefObject<HTMLDivElement>;
   searchValue: string;
 };
@@ -25,11 +25,11 @@ function MessagePresenter({
   useEffect(() => {
     if (messageListRef.current && scrollToIndex !== -1) {
       const targetElement = messageRefs.current[scrollToIndex];
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
+      if (targetElement && targetElement.current) {
+        targetElement.current.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [messages, scrollToIndex]);
+  }, [messageListRef, messageRefs, messages, scrollToIndex]);
 
   // 검색어 하이라이팅 함수
   const highlightSearchText = (text: string) => {
@@ -54,6 +54,8 @@ function MessagePresenter({
     );
   };
 
+  const liRef = useRef<HTMLLIElement | null>(null);
+
   return (
     <div
       className="flex-grow overflow-y-auto list-none bg-white shadow-lg rounded-lg border-2 border-gray-300 p-4 m-4"
@@ -66,8 +68,9 @@ function MessagePresenter({
               className="flex items-center border-gray-300 py-2"
               key={index}
               ref={(el) => {
-                if (messageRefs.current) {
-                  messageRefs.current[index] = el;
+                if (messageRefs.current && el) {
+                  liRef.current = el;
+                  messageRefs.current[index] = liRef;
                 }
               }}
             >
