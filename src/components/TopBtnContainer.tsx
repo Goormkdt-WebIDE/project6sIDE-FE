@@ -27,7 +27,7 @@ function TopBtnContainer({ className }: Props) {
 
   return (
     <div
-      className={`absolute right-3 -top-2  z-10 flex items-center md:top-2 ${className}`}
+      className={`absolute w-fit right-3 -top-2  z-10 flex items-center md:top-2 ${className}`}
     >
       {!user && !isInitializing ? (
         ""
