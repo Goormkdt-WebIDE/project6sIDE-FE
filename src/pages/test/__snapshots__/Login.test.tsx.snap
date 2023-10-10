@@ -17,7 +17,7 @@ exports[`Login 스냅샷 테스트 1`] = `
           6S IDE
         </h1>
         <h3
-          class="text-black text-3xl pb-4 mb-2 border-none font-thin"
+          class="text-black text-3xl pb-4 mb-2 border-none font-thin "
         >
           Sign in
         </h3>
@@ -43,13 +43,13 @@ exports[`Login 스냅샷 테스트 1`] = `
             Sign In
           </button>
           <a
-            class="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2"
+            class="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2  "
             href="/register"
           >
             REGISTER
           </a>
           <a
-            class="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4"
+            class="text-gray-600 text-sm mt-4 pl-4 hover:underline pb-4 "
             href="/password-reset"
           >
             PASSWORD RESET

@@ -218,7 +218,7 @@ export default function IDE() {
           </>
         )}
         <Swiper
-          className="mySwiper md:hidden"
+          className="mySwiper md:!hidden"
           modules={[Pagination]}
           pagination={{
             clickable: true,

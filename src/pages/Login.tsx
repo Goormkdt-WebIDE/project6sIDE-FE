@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import { FormValue } from "../service/http-requests/user-api";
 import { notifyError, notifySuccess } from "../service/toast";
 import { useAuthContext } from "../context/AuthContext";
+import { useTheme } from "../context/isDarkModeContext";
 
 function Login() {
   const {
@@ -23,6 +24,8 @@ function Login() {
   const { login, onAuthStateChange } = useAuthContext();
 
   const navigate = useNavigate();
+
+  const theme = useTheme();
 
   const onSubmit = async (data: FormValue) => {
     try {
@@ -48,7 +51,7 @@ function Login() {
           <h1 className="text-blue-500 text-5xl pb-4 mb-2 border-none font-thin">
             6S IDE
           </h1>
-          <h3 className="text-black text-3xl pb-4 mb-2 border-none font-thin">
+          <h3 className={`text-black text-3xl pb-4 mb-2 border-none font-thin ${theme.theme === 'dark' ? 'text-white' : ''}`}>
             Sign in
           </h3>
           <form
@@ -65,17 +68,16 @@ function Login() {
               errors={errors}
               name="password"
             />
-
             <SubmitButton text="Sign In" loading={loading} />
             <Link
               to="/register"
-              className="text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2"
+              className={`text-gray-600 text-sm mt-4 pr-4 hover:underline mb-2  ${theme.theme === 'dark' ? 'text-white' : ''}`}
             >
               REGISTER
             </Link>
             <Link
               to="/password-reset"
-              className="text-gray-600 text-sm mt-4 pl-4 border-b hover:underline pb-4"
+              className={`text-gray-600 text-sm mt-4 pl-4 hover:underline pb-4 ${theme.theme === 'dark' ? 'text-white' : ''}`}
             >
               PASSWORD RESET
             </Link>
