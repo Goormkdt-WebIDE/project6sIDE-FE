@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, KeyboardEvent } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  RefObject,
+  KeyboardEvent,
+} from "react";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SearchInput from "./SearchInput";
@@ -19,7 +25,7 @@ function Chatting(): JSX.Element {
   const [stompClient, setStompClient] = useState<any>(null);
   const [userColors, setUserColors] = useState<{ [key: string]: string }>({});
   const [searchValue, setSearchValue] = useState<string>("");
-  const messageRefs = useRef<Array<React.RefObject<HTMLLIElement | null>>>([]);
+  const messageRefs = useRef<RefObject<HTMLLIElement | null>[]>([]);
   const messageListRef = useRef<HTMLDivElement | null>(null);
   const [scrollToIndex, setScrollToIndex] = useState<number>(-1);
   const [nextMatchIndex, setNextMatchIndex] = useState<number>(-1);
@@ -73,26 +79,33 @@ function Chatting(): JSX.Element {
   // 메시지 검색과 스크롤 관련 이벤트 핸들러
   const messageSearch = (): void => {
     const searchValueLower: string = searchValue.toLowerCase();
-    const startIndex: number = nextMatchIndex !== -1 ? nextMatchIndex + 1 : 0;
     const index: number = messages.findIndex(
       (message, i) =>
-        i >= startIndex &&
+        i > nextMatchIndex &&
         message.content.toLowerCase().includes(searchValueLower)
     );
 
     if (index !== -1) {
       if (messageRefs.current[index]) {
-        messageRefs.current[index]?.current?.scrollIntoView(); // 수정된 부분
+        messageRefs.current[index]?.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
         setNextMatchIndex(index);
+        setScrollToIndex(index);
       }
     } else {
-      // 일치하는 메시지를 더 이상 찾지 못한 경우, 첫 번째 메시지로 돌아감
+      // 검색 결과가 없을 때 메시지 리스트의 맨 위로 스크롤
       setNextMatchIndex(-1);
+      setScrollToIndex(-1);
+      if (messageListRef.current) {
+        messageListRef.current.scrollTop = 0;
+      }
     }
   };
 
   return (
-    <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25 md:basis-[40%]">
+    <div className="container mx-auto h-full flex flex-col bg-cover bg-center bg-opacity-25">
       <SearchInput
         searchValue={searchValue}
         setSearchValue={setSearchValue}
@@ -102,10 +115,11 @@ function Chatting(): JSX.Element {
         messages={messages}
         userColors={userColors}
         scrollToIndex={scrollToIndex}
-        messageRefs={messageRefs.current}
+        messageRefs={messageRefs}
         messageListRef={messageListRef}
+        searchValue={searchValue}
       />
-      <div className="p-4 border-none border-gray-300">
+      <div className="pb-4 border-none border-gray-300">
         <MessageInput
           username={username}
           message={message}

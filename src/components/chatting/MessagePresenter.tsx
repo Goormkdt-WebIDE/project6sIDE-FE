@@ -1,4 +1,4 @@
-import React, { MutableRefObject, RefObject, useEffect } from "react";
+import React, { useEffect, RefObject, MutableRefObject, useRef } from "react";
 
 type Message = {
   sender: string;
@@ -9,8 +9,9 @@ type MessagePresenterProps = {
   messages: Message[];
   userColors: Record<string, string>;
   scrollToIndex: number;
-  messageRefs: MutableRefObject<HTMLLIElement | null>[];
+  messageRefs: MutableRefObject<React.MutableRefObject<HTMLLIElement | null>[]>;
   messageListRef: RefObject<HTMLDivElement>;
+  searchValue: string;
 };
 
 function MessagePresenter({
@@ -19,17 +20,41 @@ function MessagePresenter({
   scrollToIndex,
   messageRefs,
   messageListRef,
+  searchValue,
 }: MessagePresenterProps) {
   useEffect(() => {
-    // messages 배열이 업데이트될 때 스크롤 이동 로직을 실행하세요.
-    if (messageListRef.current && scrollToIndex !== -1 && messageRefs) {
-      const targetElement =
-        messageRefs[scrollToIndex] && messageRefs[scrollToIndex].current;
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
+    if (messageListRef.current && scrollToIndex !== -1) {
+      const targetElement = messageRefs.current[scrollToIndex];
+      if (targetElement && targetElement.current) {
+        targetElement.current.scrollIntoView({ behavior: "smooth" });
       }
     }
   }, [messageListRef, messageRefs, messages, scrollToIndex]);
+
+  // 검색어 하이라이팅 함수
+  const highlightSearchText = (text: string) => {
+    if (!searchValue || searchValue.trim() === "") {
+      return text;
+    }
+
+    const regex = new RegExp(`(${searchValue})`, "gi");
+    const parts = text.split(regex);
+    return (
+      <>
+        {parts.map((part, index) =>
+          regex.test(part) ? (
+            <span key={index} className="bg-red-400 text-black px-1">
+              {part}
+            </span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </>
+    );
+  };
+
+  const liRef = useRef<HTMLLIElement | null>(null);
 
   return (
     <div
@@ -43,8 +68,9 @@ function MessagePresenter({
               className="flex items-center border-gray-300 py-2"
               key={index}
               ref={(el) => {
-                if (el && messageRefs && messageRefs[index]) {
-                  messageRefs[index].current = el;
+                if (messageRefs.current && el) {
+                  liRef.current = el;
+                  messageRefs.current[index] = liRef;
                 }
               }}
             >
@@ -58,7 +84,9 @@ function MessagePresenter({
               </div>
               <div>
                 <p className="text-xs font-semibold">{message.sender}</p>
-                <p className="text-gray-700">{message.content}</p>
+                <p className="text-gray-700">
+                  {highlightSearchText(message.content)}
+                </p>
               </div>
             </li>
           ))
