@@ -1,12 +1,14 @@
 import React from "react";
 import { NodeApi } from "react-arborist";
 import { Code, Directory } from "../types/TreeView.types";
+import { useTheme } from "../../context/isDarkModeContext";
 
 type Props = {
   node: NodeApi<Code | Directory>;
 };
 
 export default function NodeName({ node }: Props) {
+  const { theme } = useTheme();
   return (
     <>
       {node.isEditing ? (
@@ -22,7 +24,9 @@ export default function NodeName({ node }: Props) {
           autoFocus
         />
       ) : (
-        <h3>{node.data.name}</h3>
+        <h3 className={`${theme === "dark" ? "text-white" : ""} `}>
+          {node.data.name}
+        </h3>
       )}
     </>
   );

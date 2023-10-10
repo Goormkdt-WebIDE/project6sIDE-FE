@@ -4,6 +4,7 @@ import NodeToggleArrow from "./NodeToggleArrow";
 import NodeFileIcon from "./NodeFileIcon";
 import NodeName from "./NodeName";
 import NodeActions from "./NodeActions";
+import { useTheme } from "../../context/isDarkModeContext";
 
 type AdditionalNodeProps = {
   onClickFile: (file: Code | null) => void;
@@ -18,6 +19,7 @@ export default function Node({
   onClickFile,
   onClickDirectory,
 }: NodeRendererProps<Code | Directory> & AdditionalNodeProps) {
+  const { theme } = useTheme();
   const handleClick = () => {
     node.data.type === "directory" && node.toggle();
     if (node.data.type === "file") {
@@ -35,9 +37,15 @@ export default function Node({
       style={style}
       ref={dragHandle}
       onClick={handleClick}
-      className={`group cursor-pointer hover:bg-slate-200 ${
+      className={`group cursor-pointer ${
+        theme === "dark" ? "hover:bg-sky-600" : "hover:bg-slate-200"
+      }  ${
         node.state.isSelected
-          ? "border border-blue-600 bg-slate-100 font-bold"
+          ? `border ${
+              theme === "dark"
+                ? "border-slate-100 bg-sky-600"
+                : "border-blue-600 bg-slate-100"
+            } font-bold`
           : ""
       }`}
     >
