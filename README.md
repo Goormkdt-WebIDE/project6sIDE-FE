@@ -46,9 +46,13 @@
    ```
 
 ## 시연 영상
+https://github.com/Goormkdt-WebIDE/project6sIDE-FE/assets/54153087/30952f9a-29a0-4aa4-9fdc-b92ccea88834
+
 
 ## 구성원
+| Name | GitHub Link |
+| ---- | ----------- |
+| 박소미   | [confidential-nt](https://github.com/confidential-nt) |
+| 김서아  | [records-sa](https://github.com/records-sa) |
+| 양지원   | [did-jiwon](https://github.com/did-jiwon) |
 
-- 박소미(confidenial-nt)
-- 김서아(recordsa)
-- 양지원(didjiwon)
